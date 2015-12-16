@@ -23,6 +23,7 @@ setup(
     install_requires=[
         'setuptools',
     ],
+    url='http://github.com/zedlander/flake8-commas/',
     long_description=long_description,
     description='Flake8 lint for trailing commas.',
     py_modules=['flake8_commas'],
