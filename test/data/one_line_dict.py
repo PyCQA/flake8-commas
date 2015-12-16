@@ -1,0 +1,1 @@
+one_line_dict = {"good": 123}
