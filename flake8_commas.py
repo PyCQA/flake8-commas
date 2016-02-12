@@ -3,7 +3,7 @@ import tokenize
 import pep8
 
 
-__version__ = '0.1.1'
+__version__ = '0.1.0'
 
 COMMA_ERROR_CODE = 'C812'
 COMMA_ERROR_MESSAGE = 'missing trailing comma'
