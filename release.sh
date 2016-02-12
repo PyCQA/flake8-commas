@@ -11,7 +11,9 @@ if test "$version" = ""; then
 fi
 
 # Bump the version via regexp
-sed -E "s/^(__version__ = ')[0-9]+\.[0-9]+\.[0-9]+(')$/\1$version\2/" flake8_commas.py --in-place
+TMP_FILE=`mktemp /tmp/config.XXXXXXXXXX`
+sed -E "s/^(__version__ = ')[0-9]+\.[0-9]+\.[0-9]+(')$/\1$version\2/" flake8_commas.py > $TMP_FILE
+mv $TMP_FILE flake8_commas.py
 
 # Verify our version made it into the file
 if ! grep "$version" flake8_commas.py &> /dev/null; then
