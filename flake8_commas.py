@@ -51,6 +51,9 @@ class CommaChecker(object):
         last_last_token = None
         last_token = None
         for token in tokens:
+            if token.type == tokenize.COMMENT:
+                continue
+
             if (token.string in self.CLOSING_BRACKETS and
                     last_token and last_token.type == tokenize.NL and
                     last_last_token and last_last_token.string != ','):
