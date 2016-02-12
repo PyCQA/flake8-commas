@@ -25,13 +25,13 @@ class CommaTestChecks(TestCase):
         ])
 
     def test_bad_list(self):
-        comma_checker = CommaChecker(None, filename=get_absolute_path('data/test_bad_list.py'))
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/bad_list.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
             {'col': 5, 'line': 4, 'message': 'C812 missing trailing comma'},
         ])
 
     def test_bad_function_call(self):
-        comma_checker = CommaChecker(None, filename=get_absolute_path('data/test_bad_function_call.py'))
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/bad_function_call.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
             {'col': 17, 'line': 3, 'message': 'C812 missing trailing comma'},
         ])
