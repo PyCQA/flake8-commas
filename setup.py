@@ -1,6 +1,5 @@
 import io
 from setuptools import setup
-import flake8_commas
 
 
 def read(*filenames, **kwargs):
@@ -19,7 +18,7 @@ long_description = read('README.rst')
 setup(
     name='flake8-commas',
     author='Trevor Creech',
-    version=flake8_commas.__version__,
+    version='0.1.1',
     install_requires=[
         'setuptools',
     ],
