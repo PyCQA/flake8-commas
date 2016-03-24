@@ -56,7 +56,8 @@ class CommaChecker(object):
 
             if (token.string in self.CLOSING_BRACKETS and
                     last_token and last_token.type == tokenize.NL and
-                    last_last_token and last_last_token.string != ','):
+                    last_last_token and last_last_token.string != ',' and
+                    last_last_token.string != 'kwargs'):
 
                 end_row, end_col = last_last_token.end
                 yield {
