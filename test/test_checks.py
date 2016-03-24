@@ -40,6 +40,10 @@ class CommaTestChecks(TestCase):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/comment_good_dict.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
 
+    def test_no_comma_required_after_kwargs(self):
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/kwargs.py'))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+
 
 def get_absolute_path(filepath):
     return os.path.join(os.path.dirname(__file__), filepath)
