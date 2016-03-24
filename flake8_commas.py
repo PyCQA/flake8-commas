@@ -56,21 +56,21 @@ class CommaChecker(object):
 
         last_last_token = None
         last_token = None
-        is_comprehension = [False]
+        valid_comma_context = [False]
         for token in tokens:
             if token.type == tokenize.COMMENT:
                 continue
 
             if token.string in self.OPENING_BRACKETS:
-                is_comprehension.append(False)
+                valid_comma_context.append(True)
 
             if token.string == 'for' and token.type == tokenize.NAME:
-                is_comprehension[-1] = True
+                valid_comma_context[-1] = False
 
             if (token.string in self.CLOSING_BRACKETS and
                     last_token and last_token.type == tokenize.NL and
                     last_last_token and last_last_token.string != ',' and
-                    not is_comprehension[-1]):
+                    valid_comma_context[-1]):
 
                 end_row, end_col = last_last_token.end
                 yield {
@@ -80,7 +80,7 @@ class CommaChecker(object):
                 }
 
             if token.string in self.CLOSING_BRACKETS:
-                is_comprehension.pop()
+                valid_comma_context.pop()
 
             last_last_token = last_token
             last_token = token
