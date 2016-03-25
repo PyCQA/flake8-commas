@@ -47,27 +47,20 @@ class CommaChecker(object):
 
     def get_comma_errors(self, file_contents):
         tokens = [Token(t) for t in tokenize.generate_tokens(lambda L=iter(file_contents): next(L))]
+        tokens = [t for t in tokens if t.type != tokenize.COMMENT]
 
-        last_last_token = None
-        last_token = None
-        for token in tokens:
-            if token.type == tokenize.COMMENT:
-                continue
-
+        for idx, token in enumerate(tokens):
             if (token.string in self.CLOSING_BRACKETS and
-                    last_token and last_token.type == tokenize.NL and
-                    last_last_token and last_last_token.string != ',' and
-                    last_last_token.string != 'kwargs'):
+                    (idx - 1 > 0) and tokens[idx - 1].type == tokenize.NL and
+                    (idx - 2 > 0) and tokens[idx - 2].string != ',' and
+                    (idx - 3 > 0) and tokens[idx - 3].string != '**'):
 
-                end_row, end_col = last_last_token.end
+                end_row, end_col = tokens[idx - 2].end
                 yield {
                     'message': '%s %s' % (COMMA_ERROR_CODE, COMMA_ERROR_MESSAGE),
                     'line': end_row,
                     'col': end_col,
                 }
-
-            last_last_token = last_token
-            last_token = token
 
 
 class Token:
