@@ -3,3 +3,9 @@ result = function(
     bar,
     **kwargs
 )
+
+result = function(
+    foo,
+    bar,
+    **not_called_kwargs
+)
