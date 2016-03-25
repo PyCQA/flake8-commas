@@ -64,7 +64,7 @@ class CommaChecker(object):
             if token.string in self.OPENING_BRACKETS:
                 valid_comma_context.append(True)
 
-            if token.string in ('for', 'and') and token.type == tokenize.NAME:
+            if token.string in ('for', 'and', 'or') and token.type == tokenize.NAME:
                 valid_comma_context[-1] = False
 
             if (token.string in self.CLOSING_BRACKETS and
