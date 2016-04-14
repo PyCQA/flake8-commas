@@ -21,6 +21,7 @@ setup(
     author='Trevor Creech',
     version=flake8_commas.__version__,
     install_requires=[
+        'pep8',
         'setuptools',
     ],
     url='http://github.com/zedlander/flake8-commas/',
