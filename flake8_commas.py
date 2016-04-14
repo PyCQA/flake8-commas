@@ -13,6 +13,12 @@ class CommaChecker(object):
     name = __name__
     version = __version__
 
+    OPENING_BRACKETS = [
+        '[',
+        '{',
+        '(',
+    ]
+
     CLOSING_BRACKETS = [
         ']',
         '}',
@@ -49,11 +55,20 @@ class CommaChecker(object):
         tokens = [Token(t) for t in tokenize.generate_tokens(lambda L=iter(file_contents): next(L))]
         tokens = [t for t in tokens if t.type != tokenize.COMMENT]
 
+        valid_comma_context = [False]
+
         for idx, token in enumerate(tokens):
+            if token.string in self.OPENING_BRACKETS:
+                valid_comma_context.append(True)
+
+            if token.string in ('for', 'and', 'or') and token.type == tokenize.NAME:
+                valid_comma_context[-1] = False
+
             if (token.string in self.CLOSING_BRACKETS and
                     (idx - 1 > 0) and tokens[idx - 1].type == tokenize.NL and
                     (idx - 2 > 0) and tokens[idx - 2].string != ',' and
-                    (idx - 3 > 0) and tokens[idx - 3].string != '**'):
+                    (idx - 3 > 0) and tokens[idx - 3].string != '**' and
+                    valid_comma_context[-1]):
 
                 end_row, end_col = tokens[idx - 2].end
                 yield {
@@ -61,6 +76,9 @@ class CommaChecker(object):
                     'line': end_row,
                     'col': end_col,
                 }
+
+            if token.string in self.CLOSING_BRACKETS:
+                valid_comma_context.pop()
 
 
 class Token:
