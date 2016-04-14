@@ -15,6 +15,9 @@ TMP_FILE=`mktemp /tmp/config.XXXXXXXXXX`
 sed -E "s/^(__version__ = ')[0-9]+\.[0-9]+\.[0-9]+(')$/\1$version\2/" flake8_commas.py > $TMP_FILE
 mv $TMP_FILE flake8_commas.py
 
+sed -E "s/(version=')[0-9]+\.[0-9]+\.[0-9]+(',)$/\1$version\2/" setup.py > $TMP_FILE
+mv $TMP_FILE setup.py
+
 # Verify our version made it into the file
 if ! grep "$version" flake8_commas.py &> /dev/null; then
   echo "Expected \`__version__\` to update via \`sed\` but it didn't" 1>&2
