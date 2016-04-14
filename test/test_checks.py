@@ -40,6 +40,17 @@ class CommaTestChecks(TestCase):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/comment_good_dict.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
 
+    def test_no_comma_required_list_comprehension(self):
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/list_comprehension.py'))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+
+    def test_no_comma_required_dict_comprehension(self):
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/dict_comprehension.py'))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+
+    def test_no_comma_required_multiline_if(self):
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_if.py'))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
 
 def get_absolute_path(filepath):
     return os.path.join(os.path.dirname(__file__), filepath)
