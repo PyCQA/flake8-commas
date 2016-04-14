@@ -1,6 +1,8 @@
 import io
+import os
 from setuptools import setup
-import flake8_commas
+
+__dir__ = os.path.dirname(__file__)
 
 
 def read(*filenames, **kwargs):
@@ -15,11 +17,15 @@ def read(*filenames, **kwargs):
 
 long_description = read('README.rst')
 
+about = {}
+with open(os.path.join(__dir__, 'flake8_commas', '__about__.py')) as file:
+    exec(file.read(), about)
+
 
 setup(
     name='flake8-commas',
     author='Trevor Creech',
-    version=flake8_commas.__version__,
+    version=about['__version__'],
     install_requires=[
         'pep8',
         'setuptools',
@@ -27,7 +33,7 @@ setup(
     url='http://github.com/zedlander/flake8-commas/',
     long_description=long_description,
     description='Flake8 lint for trailing commas.',
-    py_modules=['flake8_commas'],
+    packages=['flake8_commas'],
     test_suite='test',
     include_package_data=True,
     entry_points={

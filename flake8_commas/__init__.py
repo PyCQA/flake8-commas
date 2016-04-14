@@ -2,8 +2,7 @@ import tokenize
 
 import pep8
 
-
-__version__ = '0.1.1'
+from flake8_commas.__about__ import __version__
 
 COMMA_ERROR_CODE = 'C812'
 COMMA_ERROR_MESSAGE = 'missing trailing comma'
