@@ -33,4 +33,5 @@ git push
 git push --tags
 
 # Publish the release to PyPI
-python setup.py sdist --formats=gztar,zip bdist_wheel upload
+python setup.py sdist bdist_wheel
+twine upload dist/*
