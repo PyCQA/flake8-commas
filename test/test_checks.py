@@ -66,6 +66,11 @@ class CommaTestChecks(TestCase):
             {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'}
         ])
 
+    def test_comma_not_required_even_if_you_use_dict_for(self):
+        fixture = 'data/multiline_good_single_keyed_for_dict.py'
+        comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+
 
 def get_absolute_path(filepath):
     return os.path.join(os.path.dirname(__file__), filepath)
