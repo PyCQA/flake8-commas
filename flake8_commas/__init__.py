@@ -77,7 +77,7 @@ class CommaChecker(object):
                 else:
                     valid_comma_context.append(True)
 
-            if token.string in ('for', 'and', 'or') and token.type == tokenize.NAME:
+            if token.string == 'for' and token.type == tokenize.NAME:
                 valid_comma_context[-1] = False
 
             if (valid_comma_context[-1] == TUPLE_OR_PARENTH_FORM and
