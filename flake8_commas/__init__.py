@@ -7,6 +7,20 @@ from flake8_commas.__about__ import __version__
 COMMA_ERROR_CODE = 'C812'
 COMMA_ERROR_MESSAGE = 'missing trailing comma'
 
+# A parenthesized expression list yields whatever that expression list
+# yields: if the list contains at least one comma, it yields a tuple;
+# otherwise, it yields the single expression that makes up the expression
+# list.
+
+
+class TupleOrParenthForm(object):
+    def __bool__(self):
+        return False
+
+    __nonzero__ = __bool__
+
+TUPLE_OR_PARENTH_FORM = TupleOrParenthForm()
+
 
 class CommaChecker(object):
     name = __name__
@@ -58,10 +72,17 @@ class CommaChecker(object):
 
         for idx, token in enumerate(tokens):
             if token.string in self.OPENING_BRACKETS:
-                valid_comma_context.append(True)
+                if token.string == '(':
+                    valid_comma_context.append(TUPLE_OR_PARENTH_FORM)
+                else:
+                    valid_comma_context.append(True)
 
             if token.string in ('for', 'and', 'or') and token.type == tokenize.NAME:
                 valid_comma_context[-1] = False
+
+            if (valid_comma_context[-1] == TUPLE_OR_PARENTH_FORM and
+                    token.string == ','):
+                valid_comma_context[-1] = True
 
             if (token.string in self.CLOSING_BRACKETS and
                     (idx - 1 > 0) and tokens[idx - 1].type == tokenize.NL and
