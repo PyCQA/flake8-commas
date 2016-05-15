@@ -1,4 +1,5 @@
 import tokenize
+import token as mod_token
 
 import pep8
 
@@ -72,7 +73,7 @@ class CommaChecker(object):
 
         for idx, token in enumerate(tokens):
             if token.string in self.OPENING_BRACKETS:
-                if token.string == '(':
+                if token.string == '(' and not ((idx - 1 > 0) and tokens[idx - 1].type == mod_token.NAME):
                     valid_comma_context.append(TUPLE_OR_PARENTH_FORM)
                 else:
                     valid_comma_context.append(True)
