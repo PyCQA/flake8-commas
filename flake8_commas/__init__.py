@@ -5,13 +5,30 @@ import pep8
 
 from flake8_commas.__about__ import __version__
 
-COMMA_ERROR_CODE = 'C812'
-COMMA_ERROR_MESSAGE = 'missing trailing comma'
-
 # A parenthesized expression list yields whatever that expression list
 # yields: if the list contains at least one comma, it yields a tuple;
 # otherwise, it yields the single expression that makes up the expression
 # list.
+
+PYTHON_2_KWDS = {
+    'and', 'as', 'assert', 'break', 'class', 'continue', 'def', 'del', 'elif',
+    'else', 'except', 'exec', 'finally', 'for', 'from', 'global', 'if',
+    'import', 'in', 'is', 'lambda', 'not', 'or', 'pass', 'print', 'raise',
+    'return', 'try', 'while', 'with', 'yield',
+}
+
+PYTHON_3_KWDS = {
+    'False', 'None', 'True', 'and', 'as', 'assert', 'break', 'class',
+    'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for',
+    'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',
+    'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
+}
+
+KWD_LIKE_FUNCTION = {'import', 'assert'}
+
+ALL_KWDS = (PYTHON_2_KWDS & PYTHON_3_KWDS) - KWD_LIKE_FUNCTION
+NOT_PYTHON_2_KWDS = (PYTHON_3_KWDS - PYTHON_2_KWDS) - KWD_LIKE_FUNCTION
+NOT_PYTHON_3_KWDS = (PYTHON_2_KWDS - PYTHON_3_KWDS) - KWD_LIKE_FUNCTION
 
 
 class TupleOrParenthForm(object):
@@ -21,6 +38,14 @@ class TupleOrParenthForm(object):
     __nonzero__ = __bool__
 
 TUPLE_OR_PARENTH_FORM = TupleOrParenthForm()
+PY3K_ONLY_ERROR = object()
+PY2_ONLY_ERROR = object()
+
+ERRORS = {
+    True: ('C812', 'missing trailing comma'),
+    PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
+    PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
+}
 
 
 class CommaChecker(object):
@@ -73,8 +98,21 @@ class CommaChecker(object):
 
         for idx, token in enumerate(tokens):
             if token.string in self.OPENING_BRACKETS:
-                if token.string == '(' and not ((idx - 1 > 0) and tokens[idx - 1].type == mod_token.NAME):
-                    valid_comma_context.append(TUPLE_OR_PARENTH_FORM)
+                if token.string == '(':
+                    is_function = (
+                        (idx - 1 > 0) and
+                        tokens[idx - 1].type == mod_token.NAME and
+                        tokens[idx - 1].string not in ALL_KWDS
+                    )
+                    if is_function:
+                        if tokens[idx - 1].string in NOT_PYTHON_2_KWDS:
+                            valid_comma_context.append(PY2_ONLY_ERROR)
+                        elif tokens[idx - 1].string in NOT_PYTHON_3_KWDS:
+                            valid_comma_context.append(PY3K_ONLY_ERROR)
+                        else:
+                            valid_comma_context.append(True)
+                    else:
+                        valid_comma_context.append(TUPLE_OR_PARENTH_FORM)
                 else:
                     valid_comma_context.append(True)
 
@@ -93,7 +131,7 @@ class CommaChecker(object):
 
                 end_row, end_col = tokens[idx - 2].end
                 yield {
-                    'message': '%s %s' % (COMMA_ERROR_CODE, COMMA_ERROR_MESSAGE),
+                    'message': '%s %s' % ERRORS[valid_comma_context[-1]],
                     'line': end_row,
                     'col': end_col,
                 }
