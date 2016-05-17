@@ -37,13 +37,15 @@ class CommaTestChecks(TestCase):
         ])
 
     def test_multiline_bad_function_def(self):
-        comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_bad_function_def.py'))
+        fixture = 'data/multiline_bad_function_def.py'
+        comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
-            {'col': 13, 'line': 9, 'message': 'C812 missing trailing comma'}
+            {'col': 13, 'line': 9, 'message': 'C812 missing trailing comma'},
         ])
 
     def test_bad_function_one_param(self):
-        comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_bad_function_one_param.py'))
+        fixture = 'data/multiline_bad_function_one_param.py'
+        comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
             {'col': 13, 'line': 2, 'message': 'C812 missing trailing comma'},
             {'col': 9, 'line': 8, 'message': 'C812 missing trailing comma'},
@@ -83,9 +85,10 @@ class CommaTestChecks(TestCase):
         ])
 
     def test_comma_required_even_if_you_use_or(self):
-        comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_bad_or_dict.py'))
+        fixture = 'data/multiline_bad_or_dict.py'
+        comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
-            {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'}
+            {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'},
         ])
 
     def test_comma_not_required_even_if_you_use_dict_for(self):
@@ -116,7 +119,6 @@ class ParenthFormChecks(TestCase):
         comma_checker = CommaChecker(None, filename=get_absolute_path(self.base + 'py2.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
 
-
     def test_py2_bad(self):
         comma_checker = CommaChecker(None, filename=get_absolute_path(self.base + 'py2_bad.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
@@ -140,7 +142,6 @@ class ParenthFormChecks(TestCase):
     def test_py3(self):
         comma_checker = CommaChecker(None, filename=get_absolute_path(self.base + 'py3.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
-
 
 
 def get_absolute_path(filepath):

@@ -59,9 +59,13 @@ def process_parentheses(token, previous_token):
     if token.string == '(':
         is_function = (
             previous_token and
-            ((previous_token.string in CLOSE_ATOM_STRINGS) or
-            (previous_token.type == mod_token.NAME and
-            previous_token.string not in ALL_KWDS))
+            (
+                (previous_token.string in CLOSE_ATOM_STRINGS) or
+                (
+                    previous_token.type == mod_token.NAME and
+                    previous_token.string not in ALL_KWDS
+                )
+            )
         )
         if is_function:
             tk_string = previous_token.string
@@ -126,10 +130,10 @@ class CommaChecker(object):
         for idx, token in enumerate(tokens):
             if token.string in self.OPENING_BRACKETS:
                 previous_token = (
-                    tokens[ idx - 1] if (idx - 1 > 0) else None
+                    tokens[idx - 1] if (idx - 1 > 0) else None
                 )
                 valid_comma_context.extend(
-                    process_parentheses(token, previous_token)
+                    process_parentheses(token, previous_token),
                 )
 
             if token.string == 'for' and token.type == tokenize.NAME:
