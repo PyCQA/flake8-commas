@@ -41,11 +41,38 @@ TUPLE_OR_PARENTH_FORM = TupleOrParenthForm()
 PY3K_ONLY_ERROR = object()
 PY2_ONLY_ERROR = object()
 
+CLOSE_ATOM_STRINGS = {
+    '}',
+    ']',
+    ')',
+    '`',
+}
+
 ERRORS = {
     True: ('C812', 'missing trailing comma'),
     PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
     PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
 }
+
+
+def process_parentheses(token, previous_token):
+    if token.string == '(':
+        is_function = (
+            previous_token and
+            ((previous_token.string in CLOSE_ATOM_STRINGS) or
+            (previous_token.type == mod_token.NAME and
+            previous_token.string not in ALL_KWDS))
+        )
+        if is_function:
+            tk_string = previous_token.string
+            if tk_string in NOT_PYTHON_2_KWDS:
+                return [PY2_ONLY_ERROR]
+            if tk_string in NOT_PYTHON_3_KWDS:
+                return [PY3K_ONLY_ERROR]
+        else:
+            return [TUPLE_OR_PARENTH_FORM]
+
+    return [True]
 
 
 class CommaChecker(object):
@@ -98,23 +125,12 @@ class CommaChecker(object):
 
         for idx, token in enumerate(tokens):
             if token.string in self.OPENING_BRACKETS:
-                if token.string == '(':
-                    is_function = (
-                        (idx - 1 > 0) and
-                        tokens[idx - 1].type == mod_token.NAME and
-                        tokens[idx - 1].string not in ALL_KWDS
-                    )
-                    if is_function:
-                        if tokens[idx - 1].string in NOT_PYTHON_2_KWDS:
-                            valid_comma_context.append(PY2_ONLY_ERROR)
-                        elif tokens[idx - 1].string in NOT_PYTHON_3_KWDS:
-                            valid_comma_context.append(PY3K_ONLY_ERROR)
-                        else:
-                            valid_comma_context.append(True)
-                    else:
-                        valid_comma_context.append(TUPLE_OR_PARENTH_FORM)
-                else:
-                    valid_comma_context.append(True)
+                previous_token = (
+                    tokens[ idx - 1] if (idx - 1 > 0) else None
+                )
+                valid_comma_context.extend(
+                    process_parentheses(token, previous_token)
+                )
 
             if token.string == 'for' and token.type == tokenize.NAME:
                 valid_comma_context[-1] = False

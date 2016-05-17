@@ -73,6 +73,15 @@ class CommaTestChecks(TestCase):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/parenth_form.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
 
+    def test_comma_required_in_argument_list(self):
+        fixture = 'data/callable_before_parenth_form.py'
+        comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
+            {'col': 7, 'line': 7, 'message': 'C812 missing trailing comma'},
+            {'col': 7, 'line': 15, 'message': 'C812 missing trailing comma'},
+            {'col': 7, 'line': 23, 'message': 'C812 missing trailing comma'},
+        ])
+
     def test_comma_required_even_if_you_use_or(self):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_bad_or_dict.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
