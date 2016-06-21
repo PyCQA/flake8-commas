@@ -2,7 +2,10 @@ import tokenize
 import collections
 import token as mod_token
 
-import pep8
+try:
+    import pycodestyle
+except ImportError:
+    import pep8 as pycodestyle
 import pkg_resources
 
 __all__ = ['CommaChecker']
@@ -153,9 +156,9 @@ class CommaChecker(object):
     def get_file_contents(self):
         if self.filename in ('stdin', '-', None):
             self.filename = 'stdin'
-            return pep8.stdin_get_value().splitlines(True)
+            return pycodestyle.stdin_get_value().splitlines(True)
         else:
-            return pep8.readlines(self.filename)
+            return pycodestyle.readlines(self.filename)
 
     def run(self):
         file_contents = self.get_file_contents()
