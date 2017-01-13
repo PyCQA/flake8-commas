@@ -96,6 +96,11 @@ class CommaTestChecks(TestCase):
         comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
 
+    def test_comma_not_required_in_parenth_form_string_splits(self):
+        fixture = 'data/multiline_string.py'
+        comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+
 
 class ParenthFormChecks(TestCase):
     base = 'data/keyword_before_parenth_form/'
