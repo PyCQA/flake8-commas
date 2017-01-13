@@ -1,7 +1,7 @@
 0.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix HTML readme render on PyPI.
 
 
 0.1.1 (2017-01-13)
