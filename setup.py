@@ -17,15 +17,10 @@ def read(*filenames, **kwargs):
 
 long_description = read('README.rst')
 
-about = {}
-with open(os.path.join(__dir__, 'flake8_commas', '__about__.py')) as file:
-    exec(file.read(), about)
-
-
 setup(
     name='flake8-trailing-commas',
     author='Trevor Creech',
-    version=about['__version__'],
+    version='0.1.0',
     install_requires=[
         'pep8',
     ],

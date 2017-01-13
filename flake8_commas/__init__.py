@@ -1,11 +1,16 @@
 import tokenize
 
 import pep8
-
-from flake8_commas.__about__ import __version__
+import pkg_resources
 
 COMMA_ERROR_CODE = 'C812'
 COMMA_ERROR_MESSAGE = 'missing trailing comma'
+
+try:
+    dist = pkg_resources.get_distribution('flake8-trailing-commas')
+    __version__ = dist.version
+except pkg_resources.DistributionNotFound:
+    __version__ = 'unknown'
 
 
 class CommaChecker(object):
