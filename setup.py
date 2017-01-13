@@ -15,22 +15,20 @@ def read(*filenames, **kwargs):
     return sep.join(buf)
 
 
-long_description = read('README.rst')
-
-about = {}
-with open(os.path.join(__dir__, 'flake8_commas', '__about__.py')) as file:
-    exec(file.read(), about)
+readme = read('README.rst')
+history = read('CHANGES.rst').replace('.. :changelog:', '')
 
 
 setup(
-    name='flake8-commas',
+    name='flake8-trailing-commas',
     author='Trevor Creech',
-    version=about['__version__'],
+    author_email='trevor@trevorcreech.com',
+    version='0.1.3.dev0',
     install_requires=[
         'pep8',
     ],
-    url='http://github.com/zedlander/flake8-commas/',
-    long_description=long_description,
+    url='https://github.com/graingert/flake8-trailing-commas/',
+    long_description=readme + '\n\n' + history,
     description='Flake8 lint for trailing commas.',
     packages=['flake8_commas'],
     test_suite='test',
@@ -49,7 +47,10 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Quality Assurance',
     ],
