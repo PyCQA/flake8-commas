@@ -15,7 +15,9 @@ def read(*filenames, **kwargs):
     return sep.join(buf)
 
 
-long_description = read('README.rst')
+readme = read('README.rst')
+history = read('CHANGES.rst').replace('.. :changelog:', '')
+
 
 setup(
     name='flake8-trailing-commas',
@@ -25,7 +27,7 @@ setup(
         'pep8',
     ],
     url='https://github.com/graingert/flake8-trailing-commas/',
-    long_description=long_description,
+    long_description=readme + '\n\n' + history,
     description='Flake8 lint for trailing commas.',
     packages=['flake8_commas'],
     test_suite='test',
