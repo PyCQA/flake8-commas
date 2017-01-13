@@ -1,7 +1,8 @@
 0.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- If there is a comment after the last item, do not report an error
+  (`Issue #18 <https://github.com/flake8-commas/flake8-commas/pull/18>`_)
 
 
 0.2.0 (2017-01-13)

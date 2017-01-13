@@ -1,8 +1,17 @@
 import tokenize
+import collections
 import token as mod_token
 
 import pep8
 import pkg_resources
+
+__all__ = ['CommaChecker']
+
+try:
+    dist = pkg_resources.get_distribution('flake8-commas')
+    __version__ = dist.version
+except pkg_resources.DistributionNotFound:
+    __version__ = 'unknown'
 
 # A parenthesized expression list yields whatever that expression list
 # yields: if the list contains at least one comma, it yields a tuple;
@@ -37,15 +46,72 @@ class TupleOrParenthForm(object):
     __nonzero__ = __bool__
 
 TUPLE_OR_PARENTH_FORM = TupleOrParenthForm()
-PY3K_ONLY_ERROR = object()
-PY2_ONLY_ERROR = object()
 
-CLOSE_ATOM_STRINGS = {
-    '}',
-    ']',
-    ')',
-    '`',
-}
+
+class SimpleToken(object):
+    def __init__(self, token, type):
+        self.token = token
+        self.type = type
+
+NEW_LINE = 'new-line'
+COMMA = ','
+OPENING_BRACKET = '('
+SOME_CLOSING = 'some-closing'
+SOME_OPENING = 'some-opening'
+OPENING = {SOME_OPENING,  OPENING_BRACKET}
+CLOSING = {SOME_CLOSING}
+BACK_TICK = '`'
+CLOSE_ATOM = CLOSING | {BACK_TICK}
+FOR = 'for'
+NAMED = 'named'
+PY2_ONLY_ERROR = 'py2-only-error'
+PY3K_ONLY_ERROR = 'py3-only-error'
+FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR}
+KWARGS = '**'
+NONE = SimpleToken(token=None, type=None)
+
+
+def get_type(token):
+    type = token.type
+    if type == tokenize.NL:
+        return NEW_LINE
+
+    string = token.string
+    if type == tokenize.NAME and string == 'for':
+        return FOR
+    if type == mod_token.NAME and string not in ALL_KWDS:
+        if string in NOT_PYTHON_2_KWDS:
+            return PY2_ONLY_ERROR
+        if string in NOT_PYTHON_3_KWDS:
+            return PY3K_ONLY_ERROR
+        return NAMED
+    if string == '**':
+        return KWARGS
+    if string == ',':
+        return COMMA
+    if string == '(':
+        return OPENING_BRACKET
+    if string in {'[', '{'}:
+        return SOME_OPENING
+    if string in {']', ')', '}'}:
+        return SOME_CLOSING
+    if string == '`':
+        return BACK_TICK
+    return
+
+
+def simple_tokens(tokens):
+    tokens = (Token(t) for t in tokens)
+    tokens = (t for t in tokens if t.type != tokenize.COMMENT)
+
+    token = next(tokens)
+    previous_token = SimpleToken(token=token, type=get_type(token))
+    for token in tokens:
+        next_token = SimpleToken(token=token, type=get_type(token))
+        if previous_token.type == NEW_LINE and next_token.type == NEW_LINE:
+            continue
+        yield previous_token
+        previous_token = next_token
 
 ERRORS = {
     True: ('C812', 'missing trailing comma'),
@@ -55,50 +121,31 @@ ERRORS = {
 
 
 def process_parentheses(token, previous_token):
-    if token.string == '(':
+    if token.type == OPENING_BRACKET:
         is_function = (
             previous_token and
             (
-                (previous_token.string in CLOSE_ATOM_STRINGS) or
+                (previous_token.type in CLOSE_ATOM) or
                 (
-                    previous_token.type == mod_token.NAME and
-                    previous_token.string not in ALL_KWDS
+                    previous_token.type in FUNCTION
                 )
             )
         )
         if is_function:
-            tk_string = previous_token.string
-            if tk_string in NOT_PYTHON_2_KWDS:
+            tk_string = previous_token.type
+            if tk_string == PY2_ONLY_ERROR:
                 return [PY2_ONLY_ERROR]
-            if tk_string in NOT_PYTHON_3_KWDS:
+            if tk_string == PY3K_ONLY_ERROR:
                 return [PY3K_ONLY_ERROR]
         else:
             return [TUPLE_OR_PARENTH_FORM]
 
     return [True]
 
-try:
-    dist = pkg_resources.get_distribution('flake8-commas')
-    __version__ = dist.version
-except pkg_resources.DistributionNotFound:
-    __version__ = 'unknown'
-
 
 class CommaChecker(object):
     name = __name__
     version = __version__
-
-    OPENING_BRACKETS = [
-        '[',
-        '{',
-        '(',
-    ]
-
-    CLOSING_BRACKETS = [
-        ']',
-        '}',
-        ')',
-    ]
 
     def __init__(self, tree, filename='(none)', builtins=None):
         self.filename = filename
@@ -127,41 +174,36 @@ class CommaChecker(object):
                 if token.type == tokenize.COMMENT and token.string.endswith('noqa')]
 
     def get_comma_errors(self, file_contents):
-        tokens = [Token(t) for t in tokenize.generate_tokens(lambda L=iter(file_contents): next(L))]
-        tokens = [t for t in tokens if t.type != tokenize.COMMENT]
+        tokens = simple_tokens(tokenize.generate_tokens(lambda L=iter(file_contents): next(L)))
 
         valid_comma_context = [False]
 
-        for idx, token in enumerate(tokens):
-            if token.string in self.OPENING_BRACKETS:
-                previous_token = (
-                    tokens[idx - 1] if (idx - 1 > 0) else None
-                )
+        window = collections.deque([NONE, NONE, NONE], maxlen=4)
+
+        for token in tokens:
+            window.append(token)
+            if token.type in OPENING:
                 valid_comma_context.extend(
-                    process_parentheses(token, previous_token),
+                    process_parentheses(token, window[2]),
                 )
 
-            if token.string == 'for' and token.type == tokenize.NAME:
+            if token.type == FOR:
                 valid_comma_context[-1] = False
 
-            if (valid_comma_context[-1] == TUPLE_OR_PARENTH_FORM and
-                    token.string == ','):
+            if (valid_comma_context[-1] == TUPLE_OR_PARENTH_FORM and token.type == COMMA):
                 valid_comma_context[-1] = True
 
-            if (token.string in self.CLOSING_BRACKETS and
-                    (idx - 1 > 0) and tokens[idx - 1].type == tokenize.NL and
-                    (idx - 2 > 0) and tokens[idx - 2].string != ',' and
-                    (idx - 3 > 0) and tokens[idx - 3].string != '**' and
-                    valid_comma_context[-1]):
+            if (token.type in CLOSING and valid_comma_context[-1]):
+                if window[2].type == NEW_LINE and window[1].type != COMMA:
+                    if window[0].type != KWARGS:
+                        end_row, end_col = window[1].token.end
+                        yield {
+                            'message': '%s %s' % ERRORS[valid_comma_context[-1]],
+                            'line': end_row,
+                            'col': end_col,
+                        }
 
-                end_row, end_col = tokens[idx - 2].end
-                yield {
-                    'message': '%s %s' % ERRORS[valid_comma_context[-1]],
-                    'line': end_row,
-                    'col': end_col,
-                }
-
-            if token.string in self.CLOSING_BRACKETS:
+            if token.type in CLOSING:
                 valid_comma_context.pop()
 
 
