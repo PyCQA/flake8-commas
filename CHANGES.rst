@@ -1,8 +1,10 @@
 0.2.1 (unreleased)
 ------------------
 
-- If there is a comment after the last item, do not report an error
-  (`Issue #18 <https://github.com/flake8-commas/flake8-commas/pull/18>`_)
+- If there is a comment after the last item, do not report an error.
+  (`Issue #18 <https://github.com/flake8-commas/flake8-commas/issue/18>`_)
+- If there is an empty, tuple, list, dict, or function, do not report an error.
+  (`Issue #17 <https://github.com/flake8-commas/flake8-commas/issue/17>`_)
 
 
 0.2.0 (2017-01-13)

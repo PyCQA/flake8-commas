@@ -53,6 +53,11 @@ class CommaTestChecks(TestCase):
             {'col': 9, 'line': 8, 'message': 'C812 missing trailing comma'},
         ])
 
+    def test_good_empty_comma_context(self):
+        fixture = 'data/good_empty_comma_context.py'
+        comma_checker = CommaChecker(None, filename=get_absolute_path(fixture))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+
     def test_comma_good_dict(self):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/comment_good_dict.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
