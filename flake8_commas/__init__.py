@@ -78,7 +78,7 @@ def process_parentheses(token, previous_token):
     return [True]
 
 try:
-    dist = pkg_resources.get_distribution('flake8-trailing-commas')
+    dist = pkg_resources.get_distribution('flake8-commas')
     __version__ = dist.version
 except pkg_resources.DistributionNotFound:
     __version__ = 'unknown'

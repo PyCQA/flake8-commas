@@ -20,14 +20,16 @@ history = read('CHANGES.rst').replace('.. :changelog:', '')
 
 
 setup(
-    name='flake8-trailing-commas',
+    name='flake8-commas',
     author='Trevor Creech',
     author_email='trevor@trevorcreech.com',
+    maintainer='Thomas Grainger',
+    maintainer_email='flake8-commas@graingert.co.uk',
     version='0.1.3.dev0',
     install_requires=[
         'pep8',
     ],
-    url='https://github.com/graingert/flake8-trailing-commas/',
+    url='https://github.com/flake8-commas/flake8-commas/',
     long_description=readme + '\n\n' + history,
     description='Flake8 lint for trailing commas.',
     packages=['flake8_commas'],
