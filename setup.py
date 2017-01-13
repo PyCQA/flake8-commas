@@ -23,13 +23,13 @@ with open(os.path.join(__dir__, 'flake8_commas', '__about__.py')) as file:
 
 
 setup(
-    name='flake8-commas',
+    name='flake8-trailing-commas',
     author='Trevor Creech',
     version=about['__version__'],
     install_requires=[
         'pep8',
     ],
-    url='http://github.com/zedlander/flake8-commas/',
+    url='https://github.com/graingert/flake8-trailing-commas/',
     long_description=long_description,
     description='Flake8 lint for trailing commas.',
     packages=['flake8_commas'],
