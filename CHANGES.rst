@@ -1,4 +1,4 @@
-0.2.0 (unreleased)
+0.2.0 (2017-01-13)
 ------------------
 
 - First version of flake8-commas with changelog

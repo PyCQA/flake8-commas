@@ -25,7 +25,7 @@ setup(
     author_email='trevor@trevorcreech.com',
     maintainer='Thomas Grainger',
     maintainer_email='flake8-commas@graingert.co.uk',
-    version='0.1.3.dev0',
+    version='0.2.0',
     install_requires=[
         'pep8',
     ],
