@@ -22,7 +22,7 @@ history = read('CHANGES.rst').replace('.. :changelog:', '')
 setup(
     name='flake8-trailing-commas',
     author='Trevor Creech',
-    version='0.1.1',
+    version='0.1.2.dev0',
     install_requires=[
         'pep8',
     ],
