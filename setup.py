@@ -23,7 +23,7 @@ setup(
     name='flake8-trailing-commas',
     author='Trevor Creech',
     author_email='trevor@trevorcreech.com',
-    version='0.1.2.dev0',
+    version='0.1.2',
     install_requires=[
         'pep8',
     ],
