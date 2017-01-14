@@ -193,15 +193,21 @@ class CommaChecker(object):
             if (valid_comma_context[-1] == TUPLE_OR_PARENTH_FORM and token.type == COMMA):
                 valid_comma_context[-1] = True
 
-            if (token.type in CLOSING and valid_comma_context[-1]):
-                if window[2].type == NEW_LINE and window[1].type != COMMA:
-                    if window[0].type != KWARGS:
-                        end_row, end_col = window[1].token.end
-                        yield {
-                            'message': '%s %s' % ERRORS[valid_comma_context[-1]],
-                            'line': end_row,
-                            'col': end_col,
-                        }
+            comma_required = (
+                token.type in CLOSING and
+                valid_comma_context[-1] and
+                window[2].type == NEW_LINE and
+                window[1].type != COMMA and
+                window[0].type != KWARGS and
+                window[1].type not in OPENING
+            )
+            if comma_required:
+                end_row, end_col = window[1].token.end
+                yield {
+                    'message': '%s %s' % ERRORS[valid_comma_context[-1]],
+                    'line': end_row,
+                    'col': end_col,
+                }
 
             if token.type in CLOSING:
                 valid_comma_context.pop()
