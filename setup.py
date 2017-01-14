@@ -27,7 +27,7 @@ setup(
     maintainer_email='flake8-commas@graingert.co.uk',
     version='0.2.1.dev0',
     install_requires=[
-        'pep8',
+        'flake8',
     ],
     url='https://github.com/flake8-commas/flake8-commas/',
     long_description=readme + '\n\n' + history,
