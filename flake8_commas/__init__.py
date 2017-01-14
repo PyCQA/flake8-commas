@@ -184,7 +184,7 @@ class CommaChecker(object):
             window.append(token)
             if token.type in OPENING:
                 valid_comma_context.extend(
-                    process_parentheses(token, window[2]),
+                    process_parentheses(token, window[-2]),
                 )
 
             if token.type == FOR:
@@ -196,10 +196,10 @@ class CommaChecker(object):
             comma_required = (
                 token.type in CLOSING and
                 valid_comma_context[-1] and
-                window[2].type == NEW_LINE and
-                window[1].type != COMMA and
-                window[0].type != KWARGS and
-                window[1].type not in OPENING
+                window[-2].type == NEW_LINE and
+                window[-3].type != COMMA and
+                window[-4].type != KWARGS and
+                window[-3].type not in OPENING
             )
             if comma_required:
                 end_row, end_col = window[1].token.end
