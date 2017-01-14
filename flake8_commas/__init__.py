@@ -202,7 +202,7 @@ class CommaChecker(object):
                 window[-3].type not in OPENING
             )
             if comma_required:
-                end_row, end_col = window[1].token.end
+                end_row, end_col = window[-3].token.end
                 yield {
                     'message': '%s %s' % ERRORS[valid_comma_context[-1]],
                     'line': end_row,
