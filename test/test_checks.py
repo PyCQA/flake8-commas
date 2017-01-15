@@ -74,9 +74,17 @@ class CommaTestChecks(TestCase):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/multiline_if.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
 
-    def test_no_comma_required_after_kwargs(self):
-        comma_checker = CommaChecker(None, filename=get_absolute_path('data/kwargs.py'))
-        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [])
+    def test_comma_required_after_unpack_in_non_def_python_3_5(self):
+        comma_checker = CommaChecker(None, filename=get_absolute_path('data/unpack.py'))
+        self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
+            {'col': 12, 'line': 26, 'message': 'C815 missing trailing comma in Python 3.5+'},
+            {'col': 23, 'line': 32, 'message': 'C815 missing trailing comma in Python 3.5+'},
+            {'col': 14, 'line': 39, 'message': 'C812 missing trailing comma'},
+            {'col': 12, 'line': 46, 'message': 'C815 missing trailing comma in Python 3.5+'},
+            {'col': 12, 'line': 50, 'message': 'C815 missing trailing comma in Python 3.5+'},
+            {'col': 9, 'line': 58, 'message': 'C815 missing trailing comma in Python 3.5+'},
+            {'col': 9, 'line': 62, 'message': 'C815 missing trailing comma in Python 3.5+'},
+        ])
 
     def test_no_comma_required_in_parenth_form(self):
         comma_checker = CommaChecker(None, filename=get_absolute_path('data/parenth_form.py'))

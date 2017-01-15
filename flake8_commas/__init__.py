@@ -69,7 +69,7 @@ PY3K_ONLY_ERROR = 'py3-only-error'
 DEF = 'def'
 FUNCTION_DEF = 'function-def'
 FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR, FUNCTION_DEF}
-KWARGS = '**'
+UNPACK = '* or **'
 NONE = SimpleToken(token=None, type=None)
 
 
@@ -89,8 +89,8 @@ def get_type(token):
         if string in NOT_PYTHON_3_KWDS:
             return PY3K_ONLY_ERROR
         return NAMED
-    if string == '**':
-        return KWARGS
+    if string in {'**', '*'}:
+        return UNPACK
     if string == ',':
         return COMMA
     if string == '(':
@@ -122,11 +122,12 @@ ERRORS = {
     FUNCTION_DEF: ('C812', 'missing trailing comma'),
     PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
     PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
+    'py35': ('C815', 'missing trailing comma in Python 3.5+'),
 }
 
 
-def process_parentheses(token, window):
-    previous_token = window[-2]
+def process_parentheses(token, prev_1, prev_2):
+    previous_token = prev_1
 
     if token.type == OPENING_BRACKET:
         is_function = (
@@ -139,7 +140,7 @@ def process_parentheses(token, window):
             )
         )
         if is_function:
-            if window[-3].type == DEF:
+            if prev_2.type == DEF:
                 return [FUNCTION_DEF]
             tk_string = previous_token.type
             if tk_string == PY2_ONLY_ERROR:
@@ -191,9 +192,10 @@ class CommaChecker(object):
 
         for token in tokens:
             window.append(token)
+            prev_3, prev_2, prev_1, _ = window
             if token.type in OPENING:
                 valid_comma_context.extend(
-                    process_parentheses(token, window),
+                    process_parentheses(token, prev_1, prev_2),
                 )
 
             if token.type == FOR:
@@ -205,15 +207,22 @@ class CommaChecker(object):
             comma_required = (
                 token.type in CLOSING and
                 valid_comma_context[-1] and
-                window[-2].type == NEW_LINE and
-                window[-3].type != COMMA and
-                window[-4].type != KWARGS and
-                window[-3].type not in OPENING
+                prev_1.type == NEW_LINE and
+                prev_2.type != COMMA and
+                prev_2.type not in OPENING and
+                (
+                    prev_3.type != UNPACK or
+                    (prev_3.type == UNPACK and valid_comma_context[-1] != FUNCTION_DEF)
+                )
             )
             if comma_required:
-                end_row, end_col = window[-3].token.end
+                end_row, end_col = prev_2.token.end
+                if (prev_3.type == UNPACK):
+                    errors = ERRORS['py35']
+                else:
+                    errors = ERRORS[valid_comma_context[-1]]
                 yield {
-                    'message': '%s %s' % ERRORS[valid_comma_context[-1]],
+                    'message': '%s %s' % errors,
                     'line': end_row,
                     'col': end_col,
                 }
