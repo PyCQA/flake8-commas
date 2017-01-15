@@ -66,7 +66,9 @@ FOR = 'for'
 NAMED = 'named'
 PY2_ONLY_ERROR = 'py2-only-error'
 PY3K_ONLY_ERROR = 'py3-only-error'
-FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR}
+DEF = 'def'
+FUNCTION_DEF = 'function-def'
+FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR, FUNCTION_DEF}
 KWARGS = '**'
 NONE = SimpleToken(token=None, type=None)
 
@@ -79,6 +81,8 @@ def get_type(token):
     string = token.string
     if type == tokenize.NAME and string == 'for':
         return FOR
+    if type == tokenize.NAME and string == 'def':
+        return DEF
     if type == mod_token.NAME and string not in ALL_KWDS:
         if string in NOT_PYTHON_2_KWDS:
             return PY2_ONLY_ERROR
@@ -115,12 +119,15 @@ def simple_tokens(tokens):
 
 ERRORS = {
     True: ('C812', 'missing trailing comma'),
+    FUNCTION_DEF: ('C812', 'missing trailing comma'),
     PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
     PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
 }
 
 
-def process_parentheses(token, previous_token):
+def process_parentheses(token, window):
+    previous_token = window[-2]
+
     if token.type == OPENING_BRACKET:
         is_function = (
             previous_token and
@@ -132,6 +139,8 @@ def process_parentheses(token, previous_token):
             )
         )
         if is_function:
+            if window[-3].type == DEF:
+                return [FUNCTION_DEF]
             tk_string = previous_token.type
             if tk_string == PY2_ONLY_ERROR:
                 return [PY2_ONLY_ERROR]
@@ -184,7 +193,7 @@ class CommaChecker(object):
             window.append(token)
             if token.type in OPENING:
                 valid_comma_context.extend(
-                    process_parentheses(token, window[-2]),
+                    process_parentheses(token, window),
                 )
 
             if token.type == FOR:

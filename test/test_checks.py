@@ -139,13 +139,13 @@ class ParenthFormChecks(TestCase):
     def test_py2_bad(self):
         comma_checker = CommaChecker(None, filename=get_absolute_path(self.base + 'py2_bad.py'))
         self.assertEqual(list(comma_checker.get_comma_errors(comma_checker.get_file_contents())), [
-            {'col': 7, 'line': 4, 'message': 'C814 missing trailing comma in Python 2'},
+            {'col': 7, 'line': 4, 'message': 'C812 missing trailing comma'},
             {'col': 11, 'line': 7, 'message': 'C814 missing trailing comma in Python 2'},
-            {'col': 7, 'line': 12, 'message': 'C814 missing trailing comma in Python 2'},
+            {'col': 7, 'line': 12, 'message': 'C812 missing trailing comma'},
             {'col': 11, 'line': 15, 'message': 'C814 missing trailing comma in Python 2'},
-            {'col': 7, 'line': 20, 'message': 'C814 missing trailing comma in Python 2'},
+            {'col': 7, 'line': 20, 'message': 'C812 missing trailing comma'},
             {'col': 11, 'line': 23, 'message': 'C814 missing trailing comma in Python 2'},
-            {'col': 7, 'line': 28, 'message': 'C814 missing trailing comma in Python 2'},
+            {'col': 7, 'line': 28, 'message': 'C812 missing trailing comma'},
             {'col': 11, 'line': 31, 'message': 'C814 missing trailing comma in Python 2'},
         ])
 
