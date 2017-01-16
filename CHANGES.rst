@@ -1,4 +1,4 @@
-0.2.1 (unreleased)
+0.3.0 (2017-01-16)
 ------------------
 
 - If there is a comment after the last item, do not report an error.
