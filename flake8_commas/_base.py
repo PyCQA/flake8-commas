@@ -213,9 +213,7 @@ def get_comma_errors(file_contents):
             prev_1.type == NEW_LINE and
             prev_2.type != COMMA and
             prev_2.type not in OPENING and
-            (prev_3.type != UNPACK or (
-                prev_3.type == UNPACK and
-                valid_comma_context[-1] != FUNCTION_DEF))
+            (prev_3.type != UNPACK or valid_comma_context[-1] != FUNCTION_DEF)
         )
         if comma_required:
             end_row, end_col = prev_2.token.end
