@@ -190,11 +190,11 @@ def get_comma_errors(file_contents):
 
     stack = [Context(False, False)]
 
-    window = collections.deque([NONE, NONE, NONE], maxlen=4)
+    window = collections.deque([NONE, NONE], maxlen=3)
 
     for token in tokens:
         window.append(token)
-        prev_3, prev_2, prev_1, _ = window
+        prev_2, prev_1, _ = window
         if token.type in OPENING:
             stack.extend(
                 process_parentheses(token, prev_1, prev_2),
