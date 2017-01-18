@@ -19,6 +19,13 @@ readme = read('README.rst')
 history = read('CHANGES.rst').replace('.. :changelog:', '')
 
 
+def get_error_code():
+    with open(os.path.join(__dir__, 'flake8_commas', '__init__.py')) as file:
+        for line in file:
+            if line.startswith('COMMA_ERROR_CODE = '):
+                return eval(line.split(' = ', 1)[-1])
+
+
 setup(
     name='flake8-commas',
     author='Trevor Creech',
@@ -35,7 +42,7 @@ setup(
     include_package_data=True,
     entry_points={
         'flake8.extension': [
-            'flake8_commas = flake8_commas:CommaChecker',
+            '%s = flake8_commas:CommaChecker' % get_error_code(),
         ],
     },
     classifiers=[
