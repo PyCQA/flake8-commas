@@ -1,4 +1,4 @@
-0.4.1 (unreleased)
+0.4.1 (2017-01-18)
 ------------------
 
 - Add the framework flake8 trove classifier.
