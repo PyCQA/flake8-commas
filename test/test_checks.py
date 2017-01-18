@@ -100,7 +100,6 @@ def test_comma_required_after_unpack_in_non_def_python_3_5():
     assert list(get_comma_errors(get_tokens(filename))) == [
         {'col': 12, 'line': 26, 'message': C815},
         {'col': 23, 'line': 32, 'message': C815},
-        {'col': 14, 'line': 39, 'message': 'C812 missing trailing comma'},
         {'col': 12, 'line': 46, 'message': C815},
         {'col': 12, 'line': 50, 'message': C815},
         {'col': 9, 'line': 58, 'message': C815},

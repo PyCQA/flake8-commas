@@ -3,6 +3,7 @@
 
 - Support flake8 3.x.x.
   (`Issue #20 <https://github.com/flake8-commas/flake8-commas/issue/20>`_)
+- No trailing comma after any function def with unpack.
 
 
 0.3.1 (2017-01-18)

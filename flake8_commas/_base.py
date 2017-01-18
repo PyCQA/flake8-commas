@@ -212,9 +212,6 @@ def get_comma_errors(tokens):
         if comma_found:
             stack[-1] = stack[-1]._replace(comma=True)
 
-        if token.type == COMMA:
-            stack[-1] = stack[-1]._replace(unpack=False)
-
         if token.type == UNPACK:
             stack[-1] = stack[-1]._replace(unpack=True)
 

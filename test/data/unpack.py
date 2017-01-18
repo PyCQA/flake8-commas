@@ -16,7 +16,7 @@ def function(
     foo,
     bar,
     *args,
-    extra_kwarg,
+    extra_kwarg
     ):
     pass
 
@@ -80,7 +80,7 @@ def foo(
     ham,
     spam,
     *args,
-    kwarg_only,
+    kwarg_only
     ):
     pass
 
