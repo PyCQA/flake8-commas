@@ -56,6 +56,9 @@ class SimpleToken(object):
         self.type = type
 
 
+Context = collections.namedtuple('Context', ['comma', 'unpack'])
+
+
 NEW_LINE = 'new-line'
 COMMA = ','
 OPENING_BRACKET = '('
@@ -144,16 +147,16 @@ def process_parentheses(token, prev_1, prev_2):
         )
         if is_function:
             if prev_2.type == DEF:
-                return [(FUNCTION_DEF, False)]
+                return [Context(FUNCTION_DEF, False)]
             tk_string = previous_token.type
             if tk_string == PY2_ONLY_ERROR:
-                return [(PY2_ONLY_ERROR, False)]
+                return [Context(PY2_ONLY_ERROR, False)]
             if tk_string == PY3K_ONLY_ERROR:
-                return [(PY3K_ONLY_ERROR, False)]
+                return [Context(PY3K_ONLY_ERROR, False)]
         else:
-            return [(TUPLE_OR_PARENTH_FORM, False)]
+            return [Context(TUPLE_OR_PARENTH_FORM, False)]
 
-    return [(True, False)]
+    return [Context(True, False)]
 
 
 def get_file_contents(filename):
@@ -185,7 +188,7 @@ def get_noqa_lines(file_contents):
 def get_comma_errors(file_contents):
     tokens = simple_tokens(get_tokens(file_contents))
 
-    valid_comma_context = [(False, False)]
+    stack = [Context(False, False)]
 
     window = collections.deque([NONE, NONE, NONE], maxlen=4)
 
@@ -193,43 +196,40 @@ def get_comma_errors(file_contents):
         window.append(token)
         prev_3, prev_2, prev_1, _ = window
         if token.type in OPENING:
-            valid_comma_context.extend(
+            stack.extend(
                 process_parentheses(token, prev_1, prev_2),
             )
 
         if token.type == FOR:
-            valid_comma_context[-1] = (False, False)
+            stack[-1] = Context(False, False)
 
         comma_found = (
-            valid_comma_context[-1][0] == TUPLE_OR_PARENTH_FORM and
+            stack[-1].comma == TUPLE_OR_PARENTH_FORM and
             token.type == COMMA
         )
         if comma_found:
-            _, unpack = valid_comma_context[-1]
-            valid_comma_context[-1] = (True, unpack)
+            stack[-1] = stack[-1]._replace(comma=True)
 
         if token.type == COMMA:
-            context, _ = valid_comma_context[-1]
-            valid_comma_context[-1] = context, False
+            stack[-1] = stack[-1]._replace(unpack=False)
 
         if token.type == UNPACK:
-            context, _ = valid_comma_context[-1]
-            valid_comma_context[-1] = context, True
+            stack[-1] = stack[-1]._replace(unpack=True)
 
         comma_required = (
             token.type in CLOSING and
-            valid_comma_context[-1][0] and
+            stack[-1].comma and
             prev_1.type == NEW_LINE and
             prev_2.type != COMMA and
             prev_2.type not in OPENING and
-            not (valid_comma_context[-1][1] and valid_comma_context[-1][0] == FUNCTION_DEF)
+            not (stack[-1].unpack and stack[-1].comma == FUNCTION_DEF)
         )
         if comma_required:
             end_row, end_col = prev_2.token.end
-            if (valid_comma_context[-1][1]):
+            if (stack[-1].unpack):
                 errors = ERRORS['py35']
             else:
-                errors = ERRORS[valid_comma_context[-1][0]]
+                errors = ERRORS[stack[-1].comma]
             yield {
                 'message': '%s %s' % errors,
                 'line': end_row,
@@ -237,7 +237,7 @@ def get_comma_errors(file_contents):
             }
 
         if token.type in CLOSING:
-            valid_comma_context.pop()
+            stack.pop()
 
 
 class CommaChecker(object):
