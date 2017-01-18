@@ -7,6 +7,7 @@ from flake8_commas._base import (
 C813 = 'C813 missing trailing comma in Python 3'
 C814 = 'C814 missing trailing comma in Python 2'
 C815 = 'C815 missing trailing comma in Python 3.5+'
+C816 = 'C816 missing trailing comma in Python 3.6+'
 
 
 def test_get_noqa_lines():
@@ -98,13 +99,19 @@ def test_comma_required_after_unpack_in_non_def_python_3_5():
     fixture = 'data/unpack.py'
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
+        {'col': 12, 'line': 4, 'message': C816},
+        {'col': 9, 'line': 11, 'message': C816},
+        {'col': 15, 'line': 19, 'message': C816},
         {'col': 12, 'line': 26, 'message': C815},
         {'col': 23, 'line': 32, 'message': C815},
-        {'col': 14, 'line': 39, 'message': 'C812 missing trailing comma'},
+        {'col': 14, 'line': 39, 'message': C816},
         {'col': 12, 'line': 46, 'message': C815},
         {'col': 12, 'line': 50, 'message': C815},
         {'col': 9, 'line': 58, 'message': C815},
         {'col': 9, 'line': 62, 'message': C815},
+        {'col': 9, 'line': 68, 'message': C816},
+        {'col': 12, 'line': 75, 'message': C816},
+        {'col': 14, 'line': 83, 'message': C816},
         {'col': 19, 'line': 112, 'message': C815},
     ]
 
