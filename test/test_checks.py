@@ -105,6 +105,7 @@ def test_comma_required_after_unpack_in_non_def_python_3_5():
         {'col': 12, 'line': 50, 'message': C815},
         {'col': 9, 'line': 58, 'message': C815},
         {'col': 9, 'line': 62, 'message': C815},
+        {'col': 19, 'line': 112, 'message': C815},
     ]
 
 

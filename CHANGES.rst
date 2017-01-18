@@ -1,7 +1,8 @@
 0.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Also parse unpacks with literals.
+  (`Issue #30 <https://github.com/flake8-commas/flake8-commas/issue/30>`_)
 
 
 0.3.0 (2017-01-16)

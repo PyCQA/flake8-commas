@@ -144,16 +144,16 @@ def process_parentheses(token, prev_1, prev_2):
         )
         if is_function:
             if prev_2.type == DEF:
-                return [FUNCTION_DEF]
+                return [(FUNCTION_DEF, False)]
             tk_string = previous_token.type
             if tk_string == PY2_ONLY_ERROR:
-                return [PY2_ONLY_ERROR]
+                return [(PY2_ONLY_ERROR, False)]
             if tk_string == PY3K_ONLY_ERROR:
-                return [PY3K_ONLY_ERROR]
+                return [(PY3K_ONLY_ERROR, False)]
         else:
-            return [TUPLE_OR_PARENTH_FORM]
+            return [(TUPLE_OR_PARENTH_FORM, False)]
 
-    return [True]
+    return [(True, False)]
 
 
 def get_file_contents(filename):
@@ -185,7 +185,7 @@ def get_noqa_lines(file_contents):
 def get_comma_errors(file_contents):
     tokens = simple_tokens(get_tokens(file_contents))
 
-    valid_comma_context = [False]
+    valid_comma_context = [(False, False)]
 
     window = collections.deque([NONE, NONE, NONE], maxlen=4)
 
@@ -198,29 +198,38 @@ def get_comma_errors(file_contents):
             )
 
         if token.type == FOR:
-            valid_comma_context[-1] = False
+            valid_comma_context[-1] = (False, False)
 
         comma_found = (
-            valid_comma_context[-1] == TUPLE_OR_PARENTH_FORM and
+            valid_comma_context[-1][0] == TUPLE_OR_PARENTH_FORM and
             token.type == COMMA
         )
         if comma_found:
-            valid_comma_context[-1] = True
+            _, unpack = valid_comma_context[-1]
+            valid_comma_context[-1] = (True, unpack)
+
+        if token.type == COMMA:
+            context, _ = valid_comma_context[-1]
+            valid_comma_context[-1] = context, False
+
+        if token.type == UNPACK:
+            context, _ = valid_comma_context[-1]
+            valid_comma_context[-1] = context, True
 
         comma_required = (
             token.type in CLOSING and
-            valid_comma_context[-1] and
+            valid_comma_context[-1][0] and
             prev_1.type == NEW_LINE and
             prev_2.type != COMMA and
             prev_2.type not in OPENING and
-            (prev_3.type != UNPACK or valid_comma_context[-1] != FUNCTION_DEF)
+            not (valid_comma_context[-1][1] and valid_comma_context[-1][0] == FUNCTION_DEF)
         )
         if comma_required:
             end_row, end_col = prev_2.token.end
-            if (prev_3.type == UNPACK):
+            if (valid_comma_context[-1][1]):
                 errors = ERRORS['py35']
             else:
-                errors = ERRORS[valid_comma_context[-1]]
+                errors = ERRORS[valid_comma_context[-1][0]]
             yield {
                 'message': '%s %s' % errors,
                 'line': end_row,
