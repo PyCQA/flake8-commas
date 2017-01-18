@@ -29,3 +29,5 @@ errors for languages you don't use in your flake8 config:
 +------+---------------------------------------+
 | C815 | missing trailing comma in Python 3.5+ |
 +------+---------------------------------------+
+| C816 | missing trailing comma in Python 3.6+ |
++------+---------------------------------------+

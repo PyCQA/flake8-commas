@@ -4,6 +4,9 @@
 - Support flake8 3.x.x.
   (`Issue #20 <https://github.com/flake8-commas/flake8-commas/issue/20>`_)
 - No trailing comma after any function def with unpack.
+- support Python 3.6 `issue9232 <https://bugs.python.org/issue9232>`_
+  trailing commas.
+  (`Issue #33 <https://github.com/flake8-commas/flake8-commas/pull/33>`_)
 
 
 0.3.1 (2017-01-18)

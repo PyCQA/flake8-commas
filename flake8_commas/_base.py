@@ -135,6 +135,7 @@ ERRORS = {
     PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
     PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
     'py35': ('C815', 'missing trailing comma in Python 3.5+'),
+    'py36': ('C816', 'missing trailing comma in Python 3.6+'),
 }
 
 
@@ -220,12 +221,13 @@ def get_comma_errors(tokens):
             stack[-1].comma and
             prev_1.type == NEW_LINE and
             prev_2.type != COMMA and
-            prev_2.type not in OPENING and
-            not (stack[-1].unpack and stack[-1].comma == FUNCTION_DEF)
+            prev_2.type not in OPENING
         )
         if comma_required:
             end_row, end_col = prev_2.token.end
-            if (stack[-1].unpack):
+            if (stack[-1].unpack and stack[-1].comma == FUNCTION_DEF):
+                errors = ERRORS['py36']
+            elif (stack[-1].unpack):
                 errors = ERRORS['py35']
             else:
                 errors = ERRORS[stack[-1].comma]
