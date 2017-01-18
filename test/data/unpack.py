@@ -105,3 +105,9 @@ foo(
 [
     *args,
 ]
+
+result = function(
+    foo,
+    bar,
+    **{'ham': spam}
+)
