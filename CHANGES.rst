@@ -1,7 +1,8 @@
 0.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Support flake8 3.x.x.
+  (`Issue #20 <https://github.com/flake8-commas/flake8-commas/issue/20>`_)
 
 
 0.3.1 (2017-01-18)

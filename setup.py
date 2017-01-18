@@ -26,7 +26,7 @@ setup(
     maintainer='Thomas Grainger',
     maintainer_email='flake8-commas@graingert.co.uk',
     version='0.3.2.dev0',
-    install_requires=['flake8>=2, <3.0.0'],
+    install_requires=['flake8>=2, <4.0.0'],
     url='https://github.com/flake8-commas/flake8-commas/',
     long_description=readme + '\n\n' + history,
     description='Flake8 lint for trailing commas.',
@@ -35,7 +35,7 @@ setup(
     include_package_data=True,
     entry_points={
         'flake8.extension': [
-            'flake8_commas = flake8_commas:CommaChecker',
+            'C81 = flake8_commas:CommaChecker',
         ],
     },
     classifiers=[

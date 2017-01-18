@@ -6,6 +6,12 @@ try:
     import pycodestyle
 except ImportError:
     import pep8 as pycodestyle
+
+try:
+    from flake8.engine import pep8 as stdin_utils
+except ImportError:
+    from flake8 import utils as stdin_utils
+
 import pkg_resources
 
 try:
@@ -159,14 +165,11 @@ def process_parentheses(token, prev_1, prev_2):
     return [Context(True, False)]
 
 
-def get_file_contents(filename):
+def get_tokens(filename):
     if filename == 'stdin':
-        return pycodestyle.stdin_get_value().splitlines(True)
+        file_contents = stdin_utils.stdin_get_value().splitlines(True)
     else:
-        return pycodestyle.readlines(filename)
-
-
-def get_tokens(file_contents):
+        file_contents = pycodestyle.readlines(filename)
     file_contents_iter = iter(file_contents)
 
     def file_contents_next():
@@ -180,13 +183,12 @@ def no_qa_comment(token):
     return token.type == tokenize.COMMENT and token.string.endswith('noqa')
 
 
-def get_noqa_lines(file_contents):
-    tokens = get_tokens(file_contents)
+def get_noqa_lines(tokens):
     return [token.start_row for token in tokens if no_qa_comment(token)]
 
 
-def get_comma_errors(file_contents):
-    tokens = simple_tokens(get_tokens(file_contents))
+def get_comma_errors(tokens):
+    tokens = simple_tokens(tokens)
 
     stack = [Context(False, False)]
 
@@ -244,15 +246,21 @@ class CommaChecker(object):
     name = __name__
     version = __version__
 
-    def __init__(self, tree, filename='(none)', builtins=None):
+    def __init__(self, tree, filename='(none)', file_tokens=None):
         fn = 'stdin' if filename in ('stdin', '-', None) else filename
         self.filename = fn
+        self.tokens = file_tokens
 
     def run(self):
-        file_contents = get_file_contents(self.filename)
+        tokens = self.tokens
+        filename = self.filename
+        noqa_line_numbers = ()
 
-        noqa_line_numbers = get_noqa_lines(file_contents)
-        for error in get_comma_errors(file_contents):
+        if tokens is None:  # flake8 2.x
+            tokens = list(get_tokens(filename))
+            noqa_line_numbers = get_noqa_lines(tokens)
+
+        for error in get_comma_errors(tokens):
             if error.get('line') not in noqa_line_numbers:
                 yield (
                     error.get('line'),
