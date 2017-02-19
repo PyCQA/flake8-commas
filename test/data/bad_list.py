@@ -19,3 +19,7 @@ bad_list_with_extra_empty = [
 
 
 ]
+
+bad_list_single_element = [
+    1
+]

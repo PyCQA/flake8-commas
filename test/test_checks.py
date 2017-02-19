@@ -4,10 +4,22 @@ from flake8_commas._base import (
     get_tokens, get_noqa_lines, get_comma_errors,
 )
 
+
+C812 = 'C812 missing trailing comma in enclosure'
 C813 = 'C813 missing trailing comma in Python 3'
 C814 = 'C814 missing trailing comma in Python 2'
 C815 = 'C815 missing trailing comma in Python 3.5+'
 C816 = 'C816 missing trailing comma in Python 3.6+'
+C817 = 'C817 missing trailing comma in function def'
+C818 = 'C818 missing trailing comma in collection'
+
+C822 = 'C822 missing trailing comma in one element enclosure'
+C823 = 'C823 missing trailing comma in Python 3 in one element enclosure'
+C824 = 'C824 missing trailing comma in Python 2 in one element enclosure'
+C825 = 'C825 missing trailing comma in Python 3.5+ in one element enclosure'
+C826 = 'C826 missing trailing comma in Python 3.6+ in one element enclosure'
+C827 = 'C827 missing trailing comma in funtion def with one argument'
+C828 = 'C828 missing trailing comma in one element collection'
 
 
 def test_get_noqa_lines():
@@ -28,23 +40,25 @@ def test_multiline_good_dict():
 def test_multiline_bad_dict():
     filename = get_absolute_path('data/multiline_bad_dict.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 14, 'line': 2, 'message': 'C812 missing trailing comma'},
+        {'col': 14, 'line': 2, 'message': C828},
+        {'col': 16, 'line': 7, 'message': C818},
     ]
 
 
 def test_bad_list():
     filename = get_absolute_path('data/bad_list.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 5, 'line': 4, 'message': 'C812 missing trailing comma'},
-        {'col': 5, 'line': 10, 'message': 'C812 missing trailing comma'},
-        {'col': 5, 'line': 17, 'message': 'C812 missing trailing comma'},
+        {'col': 5, 'line': 4, 'message': C818},
+        {'col': 5, 'line': 10, 'message': C818},
+        {'col': 5, 'line': 17, 'message': C818},
+        {'col': 5, 'line': 24, 'message': C828},
     ]
 
 
 def test_bad_function_call():
     filename = get_absolute_path('data/bad_function_call.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 17, 'line': 3, 'message': 'C812 missing trailing comma'},
+        {'col': 17, 'line': 3, 'message': C812},
     ]
 
 
@@ -52,7 +66,7 @@ def test_multiline_bad_function_def():
     fixture = 'data/multiline_bad_function_def.py'
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 13, 'line': 9, 'message': 'C812 missing trailing comma'},
+        {'col': 13, 'line': 9, 'message': C817},
     ]
 
 
@@ -60,8 +74,8 @@ def test_bad_function_one_param():
     fixture = 'data/multiline_bad_function_one_param.py'
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 13, 'line': 2, 'message': 'C812 missing trailing comma'},
-        {'col': 9, 'line': 8, 'message': 'C812 missing trailing comma'},
+        {'col': 13, 'line': 2, 'message': C827},
+        {'col': 9, 'line': 8, 'message': C822},
     ]
 
 
@@ -105,14 +119,16 @@ def test_comma_required_after_unpack_in_non_def_python_3_5():
         {'col': 12, 'line': 26, 'message': C815},
         {'col': 23, 'line': 32, 'message': C815},
         {'col': 14, 'line': 39, 'message': C816},
-        {'col': 12, 'line': 46, 'message': C815},
-        {'col': 12, 'line': 50, 'message': C815},
-        {'col': 9, 'line': 58, 'message': C815},
-        {'col': 9, 'line': 62, 'message': C815},
+        {'col': 12, 'line': 46, 'message': C825},
+        {'col': 12, 'line': 50, 'message': C825},
+        {'col': 9, 'line': 58, 'message': C825},
+        {'col': 9, 'line': 62, 'message': C825},
         {'col': 9, 'line': 68, 'message': C816},
         {'col': 12, 'line': 75, 'message': C816},
         {'col': 14, 'line': 83, 'message': C816},
         {'col': 19, 'line': 112, 'message': C815},
+        {'col': 9, 'line': 116, 'message': C826},
+        {'col': 12, 'line': 121, 'message': C826},
     ]
 
 
@@ -126,9 +142,9 @@ def test_comma_required_in_argument_list():
     fixture = 'data/callable_before_parenth_form.py'
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 7, 'line': 7, 'message': 'C812 missing trailing comma'},
-        {'col': 7, 'line': 15, 'message': 'C812 missing trailing comma'},
-        {'col': 7, 'line': 23, 'message': 'C812 missing trailing comma'},
+        {'col': 7, 'line': 7, 'message': C822},
+        {'col': 7, 'line': 15, 'message': C822},
+        {'col': 7, 'line': 23, 'message': C822},
     ]
 
 
@@ -136,7 +152,7 @@ def test_comma_required_even_if_you_use_or():
     fixture = 'data/multiline_bad_or_dict.py'
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'},
+        {'col': 14, 'line': 3, 'message': C818},
     ]
 
 
@@ -169,12 +185,16 @@ def test_base():
 def test_base_bad():
     filename = get_absolute_path(base + 'base_bad.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 5, 'line': 2, 'message': 'C812 missing trailing comma'},
-        {'col': 10, 'line': 8, 'message': 'C812 missing trailing comma'},
-        {'col': 7, 'line': 14, 'message': 'C812 missing trailing comma'},
-        {'col': 11, 'line': 17, 'message': 'C812 missing trailing comma'},
-        {'col': 7, 'line': 21, 'message': 'C812 missing trailing comma'},
-        {'col': 11, 'line': 24, 'message': 'C812 missing trailing comma'},
+        {'col': 5, 'line': 2, 'message': C822},
+        {'col': 10, 'line': 8, 'message': C812},
+        {'col': 7, 'line': 14, 'message': C827},
+        {'col': 11, 'line': 17, 'message': C822},
+        {'col': 7, 'line': 21, 'message': C827},
+        {'col': 11, 'line': 24, 'message': C822},
+        {'col': 7, 'line': 29, 'message': C817},
+        {'col': 11, 'line': 33, 'message': C812},
+        {'col': 7, 'line': 38, 'message': C817},
+        {'col': 11, 'line': 42, 'message': C812},
     ]
 
 
@@ -186,22 +206,26 @@ def test_py2():
 def test_py2_bad():
     filename = get_absolute_path(base + 'py2_bad.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 7, 'line': 4, 'message': 'C812 missing trailing comma'},
-        {'col': 11, 'line': 7, 'message': C814},
-        {'col': 7, 'line': 12, 'message': 'C812 missing trailing comma'},
-        {'col': 11, 'line': 15, 'message': C814},
-        {'col': 7, 'line': 20, 'message': 'C812 missing trailing comma'},
+        {'col': 7, 'line': 4, 'message': C827},
+        {'col': 11, 'line': 7, 'message': C824},
+        {'col': 11, 'line': 11, 'message': C814},
+        {'col': 7, 'line': 16, 'message': C827},
+        {'col': 11, 'line': 19, 'message': C824},
         {'col': 11, 'line': 23, 'message': C814},
-        {'col': 7, 'line': 28, 'message': 'C812 missing trailing comma'},
-        {'col': 11, 'line': 31, 'message': C814},
+        {'col': 7, 'line': 28, 'message': C827},
+        {'col': 11, 'line': 31, 'message': C824},
+        {'col': 11, 'line': 35, 'message': C814},
+        {'col': 7, 'line': 40, 'message': C827},
+        {'col': 11, 'line': 43, 'message': C824},
+        {'col': 11, 'line': 47, 'message': C814},
     ]
 
 
 def test_py2_3():
     filename = get_absolute_path(base + 'py2_3.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 9, 'line': 4, 'message': C813},
-        {'col': 9, 'line': 8, 'message': C813},
+        {'col': 9, 'line': 4, 'message': C823},
+        {'col': 9, 'line': 8, 'message': C823},
     ]
 
 

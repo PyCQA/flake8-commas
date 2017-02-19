@@ -6,6 +6,10 @@ def True(
     True(
         foo
     )
+    True(
+        foo,
+        bar
+    )
 
 
 def False(
@@ -13,6 +17,10 @@ def False(
 ):
     False(
         foo
+    )
+    False(
+        foo,
+        bar
     )
 
 
@@ -22,6 +30,10 @@ def None(
     None(
         foo
     )
+    None(
+        foo,
+        bar
+    )
 
 
 def nonlocal (
@@ -29,4 +41,8 @@ def nonlocal (
 ):
     nonlocal(
         foo
+    )
+    nonlocal(
+        foo,
+        bar
     )

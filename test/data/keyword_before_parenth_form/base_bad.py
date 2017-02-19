@@ -23,3 +23,21 @@ def async(
     await(
         foo
     )
+
+def await(
+    foo,
+    bar
+):
+    async(
+        foo,
+        bar
+    )
+
+def async(
+    foo,
+    bar
+):
+    await(
+        foo,
+        bar
+    )

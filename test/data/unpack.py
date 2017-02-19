@@ -111,3 +111,13 @@ result = function(
     bar,
     **{'ham': spam}
 )
+
+def foo(
+    *args
+):
+    pass
+
+def foo(
+    **kwargs
+):
+    pass

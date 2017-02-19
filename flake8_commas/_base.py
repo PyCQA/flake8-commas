@@ -62,7 +62,7 @@ class SimpleToken(object):
         self.type = type
 
 
-Context = collections.namedtuple('Context', ['comma', 'unpack'])
+Context = collections.namedtuple('Context', ['comma', 'unpack', 'multi_expr'])
 
 
 NEW_LINE = 'new-line'
@@ -80,7 +80,9 @@ PY2_ONLY_ERROR = 'py2-only-error'
 PY3K_ONLY_ERROR = 'py3-only-error'
 DEF = 'def'
 FUNCTION_DEF = 'function-def'
+FUNCTION_CALL_ISH = 'function-call-ish'
 FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR, FUNCTION_DEF}
+NON_TUPLE_COLLECTION = 'non-tuple-collection'
 UNPACK = '* or **'
 NONE = SimpleToken(token=None, type=None)
 
@@ -130,40 +132,67 @@ def simple_tokens(tokens):
 
 
 ERRORS = {
-    True: ('C812', 'missing trailing comma'),
-    FUNCTION_DEF: ('C812', 'missing trailing comma'),
+    True: ('C812', 'missing trailing comma in enclosure'),
+    FUNCTION_CALL_ISH: ('C812', 'missing trailing comma in enclosure'),
     PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
     PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
     'py35': ('C815', 'missing trailing comma in Python 3.5+'),
     'py36': ('C816', 'missing trailing comma in Python 3.6+'),
+    FUNCTION_DEF: ('C817', 'missing trailing comma in function def'),
+    NON_TUPLE_COLLECTION: ('C818', 'missing trailing comma in collection'),
+}
+
+
+SINGLE_EXPR_ERRORS = {
+    True: ('C822', 'missing trailing comma in one element enclosure'),
+    FUNCTION_CALL_ISH: (
+        'C822', 'missing trailing comma in one element enclosure',
+    ),
+    PY3K_ONLY_ERROR: (
+        'C823', 'missing trailing comma in Python 3 in one element enclosure',
+    ),
+    PY2_ONLY_ERROR: (
+        'C824', 'missing trailing comma in Python 2 in one element enclosure',
+    ),
+    'py35': (
+        'C825',
+        'missing trailing comma in Python 3.5+ in one element enclosure',
+    ),
+    'py36': (
+        'C826',
+        'missing trailing comma in Python 3.6+ in one element enclosure',
+    ),
+    FUNCTION_DEF: (
+        'C827', 'missing trailing comma in funtion def with one argument',
+    ),
+    NON_TUPLE_COLLECTION: (
+        'C828', 'missing trailing comma in one element collection',
+    ),
 }
 
 
 def process_parentheses(token, prev_1, prev_2):
-    previous_token = prev_1
+    prev_tk_string = prev_1 and prev_1.type
 
     if token.type == OPENING_BRACKET:
         is_function = (
-            previous_token and
-            (
-                (previous_token.type in CLOSE_ATOM) or
-                (
-                    previous_token.type in FUNCTION
-                )
+            prev_1 and (
+                prev_tk_string in CLOSE_ATOM or
+                prev_tk_string in FUNCTION
             )
         )
         if is_function:
             if prev_2.type == DEF:
-                return [Context(FUNCTION_DEF, False)]
-            tk_string = previous_token.type
-            if tk_string == PY2_ONLY_ERROR:
-                return [Context(PY2_ONLY_ERROR, False)]
-            if tk_string == PY3K_ONLY_ERROR:
-                return [Context(PY3K_ONLY_ERROR, False)]
+                return [Context(FUNCTION_DEF, False, False)]
+            if prev_tk_string == PY2_ONLY_ERROR:
+                return [Context(PY2_ONLY_ERROR, False, False)]
+            if prev_tk_string == PY3K_ONLY_ERROR:
+                return [Context(PY3K_ONLY_ERROR, False, False)]
+            return [Context(FUNCTION_CALL_ISH, False, False)]
         else:
-            return [Context(TUPLE_OR_PARENTH_FORM, False)]
+            return [Context(TUPLE_OR_PARENTH_FORM, False, False)]
 
-    return [Context(True, False)]
+    return [Context(NON_TUPLE_COLLECTION, False, False)]
 
 
 def get_tokens(filename):
@@ -191,7 +220,7 @@ def get_noqa_lines(tokens):
 def get_comma_errors(tokens):
     tokens = simple_tokens(tokens)
 
-    stack = [Context(False, False)]
+    stack = [Context(False, False, False)]
 
     window = collections.deque([NONE, NONE], maxlen=3)
 
@@ -203,18 +232,16 @@ def get_comma_errors(tokens):
                 process_parentheses(token, prev_1, prev_2),
             )
 
-        if token.type == FOR:
-            stack[-1] = Context(False, False)
-
-        comma_found = (
-            stack[-1].comma == TUPLE_OR_PARENTH_FORM and
-            token.type == COMMA
-        )
-        if comma_found:
-            stack[-1] = stack[-1]._replace(comma=True)
+        if token.type == COMMA:
+            if stack[-1].comma == TUPLE_OR_PARENTH_FORM:
+                stack[-1] = stack[-1]._replace(comma=True)
+            stack[-1] = stack[-1]._replace(multi_expr=True)
 
         if token.type == UNPACK:
             stack[-1] = stack[-1]._replace(unpack=True)
+
+        if token.type == FOR:
+            stack[-1] = Context(False, False, False)
 
         comma_required = (
             token.type in CLOSING and
@@ -225,12 +252,16 @@ def get_comma_errors(tokens):
         )
         if comma_required:
             end_row, end_col = prev_2.token.end
-            if (stack[-1].unpack and stack[-1].comma == FUNCTION_DEF):
-                errors = ERRORS['py36']
-            elif (stack[-1].unpack):
-                errors = ERRORS['py35']
+            if stack[-1].multi_expr:
+                err_map = ERRORS
             else:
-                errors = ERRORS[stack[-1].comma]
+                err_map = SINGLE_EXPR_ERRORS
+            if (stack[-1].unpack and stack[-1].comma == FUNCTION_DEF):
+                errors = err_map['py36']
+            elif (stack[-1].unpack):
+                errors = err_map['py35']
+            else:
+                errors = err_map[stack[-1].comma]
             yield {
                 'message': '%s %s' % errors,
                 'line': end_row,
