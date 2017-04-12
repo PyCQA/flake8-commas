@@ -167,10 +167,14 @@ def process_parentheses(token, prev_1, prev_2):
             return [Context(TUPLE_OR_PARENTH_FORM, False)]
 
     if token.type == OPENING_SQUARE_BRACKET:
-        is_index_access = previous_token and
-        (
-            previous_token.type in CLOSING or
-            previous_token.type == NAMED
+        is_index_access = (
+            previous_token and
+            (
+                (previous_token.type in CLOSING) or
+                (
+                    previous_token.type == NAMED
+                )
+            )
         )
         if is_index_access:
             return [Context(False, False)]
