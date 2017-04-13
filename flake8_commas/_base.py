@@ -39,7 +39,7 @@ PYTHON_3_KWDS = {
     'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 }
 
-KWD_LIKE_FUNCTION = {'import', 'assert'}
+KWD_LIKE_FUNCTION = {'import'}
 
 ALL_KWDS = (PYTHON_2_KWDS & PYTHON_3_KWDS) - KWD_LIKE_FUNCTION
 NOT_PYTHON_2_KWDS = (PYTHON_3_KWDS - PYTHON_2_KWDS) - KWD_LIKE_FUNCTION
@@ -83,6 +83,7 @@ DEF = 'def'
 FUNCTION_DEF = 'function-def'
 FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR, FUNCTION_DEF}
 UNPACK = '* or **'
+ASSERT = 'assert'
 NONE = SimpleToken(token=None, type=None)
 
 
@@ -96,6 +97,8 @@ def get_type(token):
         return FOR
     if type == tokenize.NAME and string == 'def':
         return DEF
+    if type == tokenize.NAME and string == 'assert':
+        return ASSERT
     if type == mod_token.NAME and string not in ALL_KWDS:
         if string in NOT_PYTHON_2_KWDS:
             return PY2_ONLY_ERROR
