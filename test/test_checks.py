@@ -95,6 +95,12 @@ def test_no_comma_required_multiline_if():
     assert list(get_comma_errors(get_tokens(filename))) == []
 
 
+def test_no_comma_required_multiline_index_access():
+    fixture = 'data/multiline_index_access.py'
+    filename = get_absolute_path(fixture)
+    assert list(get_comma_errors(get_tokens(filename))) == []
+
+
 def test_comma_required_after_unpack_in_non_def_python_3_5():
     fixture = 'data/unpack.py'
     filename = get_absolute_path(fixture)

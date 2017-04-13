@@ -68,9 +68,10 @@ Context = collections.namedtuple('Context', ['comma', 'unpack'])
 NEW_LINE = 'new-line'
 COMMA = ','
 OPENING_BRACKET = '('
+OPENING_SQUARE_BRACKET = '['
 SOME_CLOSING = 'some-closing'
 SOME_OPENING = 'some-opening'
-OPENING = {SOME_OPENING,  OPENING_BRACKET}
+OPENING = {SOME_OPENING,  OPENING_BRACKET, OPENING_SQUARE_BRACKET}
 CLOSING = {SOME_CLOSING}
 BACK_TICK = '`'
 CLOSE_ATOM = CLOSING | {BACK_TICK}
@@ -107,6 +108,8 @@ def get_type(token):
         return COMMA
     if string == '(':
         return OPENING_BRACKET
+    if string == '[':
+        return OPENING_SQUARE_BRACKET
     if string in {'[', '{'}:
         return SOME_OPENING
     if string in {']', ')', '}'}:
@@ -162,6 +165,19 @@ def process_parentheses(token, prev_1, prev_2):
                 return [Context(PY3K_ONLY_ERROR, False)]
         else:
             return [Context(TUPLE_OR_PARENTH_FORM, False)]
+
+    if token.type == OPENING_SQUARE_BRACKET:
+        is_index_access = (
+            previous_token and
+            (
+                (previous_token.type in CLOSING) or
+                (
+                    previous_token.type == NAMED
+                )
+            )
+        )
+        if is_index_access:
+            return [Context(False, False)]
 
     return [Context(True, False)]
 
