@@ -267,13 +267,16 @@ class CommaChecker(object):
         self.tokens = file_tokens
 
     def run(self):
-        tokens = self.tokens
+        file_tokens = self.tokens
         filename = self.filename
         noqa_line_numbers = ()
+        tokens = None
 
-        if tokens is None:  # flake8 2.x
+        if file_tokens is None:  # flake8 2.x
             tokens = list(get_tokens(filename))
             noqa_line_numbers = get_noqa_lines(tokens)
+        else:
+            tokens = (Token(t) for t in file_tokens)
 
         for error in get_comma_errors(tokens):
             if error.get('line') not in noqa_line_numbers:
