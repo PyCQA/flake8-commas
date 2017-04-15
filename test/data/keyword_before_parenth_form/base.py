@@ -8,6 +8,15 @@ assert(
     Anyway,
 )
 
+assert (
+    foo
+)
+
+assert (
+    foo and
+    bar
+)
+
 if(
     foo and
     bar

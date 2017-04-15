@@ -39,7 +39,7 @@ PYTHON_3_KWDS = {
     'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 }
 
-KWD_LIKE_FUNCTION = {'import', 'assert'}
+KWD_LIKE_FUNCTION = {'import'}
 
 ALL_KWDS = (PYTHON_2_KWDS & PYTHON_3_KWDS) - KWD_LIKE_FUNCTION
 NOT_PYTHON_2_KWDS = (PYTHON_3_KWDS - PYTHON_2_KWDS) - KWD_LIKE_FUNCTION
@@ -68,9 +68,10 @@ Context = collections.namedtuple('Context', ['comma', 'unpack', 'multi_expr'])
 NEW_LINE = 'new-line'
 COMMA = ','
 OPENING_BRACKET = '('
+OPENING_SQUARE_BRACKET = '['
 SOME_CLOSING = 'some-closing'
 SOME_OPENING = 'some-opening'
-OPENING = {SOME_OPENING,  OPENING_BRACKET}
+OPENING = {SOME_OPENING,  OPENING_BRACKET, OPENING_SQUARE_BRACKET}
 CLOSING = {SOME_CLOSING}
 BACK_TICK = '`'
 CLOSE_ATOM = CLOSING | {BACK_TICK}
@@ -84,6 +85,7 @@ FUNCTION_CALL_ISH = 'function-call-ish'
 FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR, FUNCTION_DEF}
 NON_TUPLE_COLLECTION = 'non-tuple-collection'
 UNPACK = '* or **'
+ASSERT = 'assert'
 NONE = SimpleToken(token=None, type=None)
 
 
@@ -97,6 +99,8 @@ def get_type(token):
         return FOR
     if type == tokenize.NAME and string == 'def':
         return DEF
+    if type == tokenize.NAME and string == 'assert':
+        return ASSERT
     if type == mod_token.NAME and string not in ALL_KWDS:
         if string in NOT_PYTHON_2_KWDS:
             return PY2_ONLY_ERROR
@@ -109,6 +113,8 @@ def get_type(token):
         return COMMA
     if string == '(':
         return OPENING_BRACKET
+    if string == '[':
+        return OPENING_SQUARE_BRACKET
     if string in {'[', '{'}:
         return SOME_OPENING
     if string in {']', ')', '}'}:
@@ -282,13 +288,16 @@ class CommaChecker(object):
         self.tokens = file_tokens
 
     def run(self):
-        tokens = self.tokens
+        file_tokens = self.tokens
         filename = self.filename
         noqa_line_numbers = ()
+        tokens = None
 
-        if tokens is None:  # flake8 2.x
+        if file_tokens is None:  # flake8 2.x
             tokens = list(get_tokens(filename))
             noqa_line_numbers = get_noqa_lines(tokens)
+        else:
+            tokens = (Token(t) for t in file_tokens)
 
         for error in get_comma_errors(tokens):
             if error.get('line') not in noqa_line_numbers:
