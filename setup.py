@@ -35,7 +35,7 @@ setup(
     include_package_data=True,
     entry_points={
         'flake8.extension': [
-            'C81 = flake8_commas:CommaChecker',
+            'C8 = flake8_commas:CommaChecker',
         ],
     },
     classifiers=[
