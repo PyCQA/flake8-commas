@@ -3,6 +3,12 @@
 
 - Prevent lambda params in a parenth form enforcing a trailing comma.
   (`Issue #41 <https://github.com/flake8-commas/flake8-commas/pull/41>`_)
+- Fix issue preventing execution on Python 2 with Flake8 3.
+  (`Issue #35 <https://github.com/flake8-commas/flake8-commas/issues/35>`_)
+- Allow bare wrapped subscript notation access.
+  (`Issue #39 <https://github.com/flake8-commas/flake8-commas/pull/39>`_)
+- Don't require comma in assert statement with parenth form.
+  (`Issue #37 <https://github.com/flake8-commas/flake8-commas/pull/37>`_)
 
 
 0.4.1 (2017-01-18)
