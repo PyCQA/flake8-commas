@@ -46,14 +46,15 @@ NOT_PYTHON_2_KWDS = (PYTHON_3_KWDS - PYTHON_2_KWDS) - KWD_LIKE_FUNCTION
 NOT_PYTHON_3_KWDS = (PYTHON_2_KWDS - PYTHON_3_KWDS) - KWD_LIKE_FUNCTION
 
 
-class TupleOrParenthForm(object):
+class FalsyObj(object):
     def __bool__(self):
         return False
 
     __nonzero__ = __bool__
 
 
-TUPLE_OR_PARENTH_FORM = TupleOrParenthForm()
+TUPLE_OR_PARENTH_FORM = FalsyObj()
+LAMBDA_EXPR = FalsyObj()
 
 
 class SimpleToken(object):
@@ -84,6 +85,8 @@ FUNCTION_DEF = 'function-def'
 FUNCTION = {NAMED, PY2_ONLY_ERROR, PY3K_ONLY_ERROR, FUNCTION_DEF}
 UNPACK = '* or **'
 ASSERT = 'assert'
+LAMBDA = 'lambda'
+COLON = ':'
 NONE = SimpleToken(token=None, type=None)
 
 
@@ -99,6 +102,8 @@ def get_type(token):
         return DEF
     if type == tokenize.NAME and string == 'assert':
         return ASSERT
+    if type == tokenize.NAME and string == 'lambda':
+        return LAMBDA
     if type == mod_token.NAME and string not in ALL_KWDS:
         if string in NOT_PYTHON_2_KWDS:
             return PY2_ONLY_ERROR
@@ -119,6 +124,8 @@ def get_type(token):
         return SOME_CLOSING
     if string == '`':
         return BACK_TICK
+    if string == ':':
+        return COLON
     return
 
 
@@ -222,6 +229,9 @@ def get_comma_errors(tokens):
                 process_parentheses(token, prev_1, prev_2),
             )
 
+        if token.type == LAMBDA:
+            stack.append(Context(LAMBDA_EXPR, False))
+
         if token.type == FOR:
             stack[-1] = Context(False, False)
 
@@ -256,7 +266,11 @@ def get_comma_errors(tokens):
                 'col': end_col,
             }
 
-        if token.type in CLOSING:
+        pop_stack = (
+            token.type in CLOSING or
+            (token.type == COLON and stack[-1].comma == LAMBDA_EXPR)
+        )
+        if pop_stack:
             stack.pop()
 
 

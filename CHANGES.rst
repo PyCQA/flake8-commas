@@ -1,7 +1,8 @@
 0.4.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Prevent lambda params in a parenth form enforcing a trailing comma.
+  (`Issue #41 <https://github.com/flake8-commas/flake8-commas/pull/41>`_)
 
 
 0.4.1 (2017-01-18)
