@@ -1,4 +1,4 @@
-0.4.2 (unreleased)
+0.4.2 (2017-04-18)
 ------------------
 
 - Prevent lambda params in a parenth form enforcing a trailing comma.
