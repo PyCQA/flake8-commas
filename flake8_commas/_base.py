@@ -54,6 +54,9 @@ class FalsyObj(object):
 
 
 TUPLE_OR_PARENTH_FORM = FalsyObj()
+SUBSCRIPT_ELEMENT = FalsyObj()
+SUBSCRIPT_TUPLE = object()
+SUBSCRIPT = {SUBSCRIPT_ELEMENT, SUBSCRIPT_TUPLE}
 LAMBDA_EXPR = FalsyObj()
 
 
@@ -144,6 +147,7 @@ def simple_tokens(tokens):
 
 ERRORS = {
     True: ('C812', 'missing trailing comma'),
+    SUBSCRIPT_TUPLE: ('C812', 'missing trailing comma'),
     FUNCTION_DEF: ('C812', 'missing trailing comma'),
     PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
     PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
@@ -187,7 +191,7 @@ def process_parentheses(token, prev_1, prev_2):
             )
         )
         if is_index_access:
-            return [Context(False, False)]
+            return [Context(SUBSCRIPT_ELEMENT, False)]
 
     return [Context(True, False)]
 
@@ -242,12 +246,23 @@ def get_comma_errors(tokens):
         if comma_found:
             stack[-1] = stack[-1]._replace(comma=True)
 
+        subscript_tuple_found = (
+            stack[-1].comma == SUBSCRIPT_ELEMENT and
+            token.type == COMMA
+        )
+        if subscript_tuple_found:
+            stack[-1] = stack[-1]._replace(comma=SUBSCRIPT_TUPLE)
+
         if token.type == UNPACK:
             stack[-1] = stack[-1]._replace(unpack=True)
 
+        comma_allowed = (
+            (token.type in CLOSING and stack[-1].comma) or
+            (token.type == COLON and stack[-1].comma == SUBSCRIPT_TUPLE)
+        )
+
         comma_required = (
-            token.type in CLOSING and
-            stack[-1].comma and
+            comma_allowed and
             prev_1.type == NEW_LINE and
             prev_2.type != COMMA and
             prev_2.type not in OPENING
@@ -265,6 +280,9 @@ def get_comma_errors(tokens):
                 'line': end_row,
                 'col': end_col,
             }
+
+        if stack[-1].comma == SUBSCRIPT_TUPLE and token.type == COLON:
+            stack[-1] = stack[-1]._replace(comma=SUBSCRIPT_ELEMENT)
 
         pop_stack = (
             token.type in CLOSING or
