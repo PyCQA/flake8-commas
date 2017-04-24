@@ -95,10 +95,23 @@ def test_no_comma_required_multiline_if():
     assert list(get_comma_errors(get_tokens(filename))) == []
 
 
-def test_no_comma_required_multiline_index_access():
+def test_no_comma_required_multiline_subscript():
     fixture = 'data/multiline_index_access.py'
     filename = get_absolute_path(fixture)
-    assert list(get_comma_errors(get_tokens(filename))) == []
+    assert list(get_comma_errors(get_tokens(filename))) == [
+        {'col': 14, 'line': 27, 'message': 'C812 missing trailing comma'},
+    ]
+
+
+def test_comma_required_multiline_subscript_with_slice():
+    fixture = 'data/multiline_subscript_slice.py'
+    filename = get_absolute_path(fixture)
+    assert list(get_comma_errors(get_tokens(filename))) == [
+        {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'},
+        {'col': 14, 'line': 33, 'message': 'C812 missing trailing comma'},
+        {'col': 14, 'line': 41, 'message': 'C812 missing trailing comma'},
+        {'col': 14, 'line': 54, 'message': 'C812 missing trailing comma'},
+    ]
 
 
 def test_comma_required_after_unpack_in_non_def_python_3_5():

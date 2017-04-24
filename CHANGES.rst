@@ -1,7 +1,9 @@
 0.4.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Enforce trailing commas in subscript tuples and slices again.
+  Regression from 0.4.2
+  (`Issue #42 <https://github.com/flake8-commas/flake8-commas/pull/42>`_)
 
 
 0.4.2 (2017-04-18)
