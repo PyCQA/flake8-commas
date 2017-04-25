@@ -1,4 +1,4 @@
-0.4.3 (unreleased)
+0.4.3 (2017-04-25)
 ------------------
 
 - Enforce trailing commas in subscript tuples and slices again.
