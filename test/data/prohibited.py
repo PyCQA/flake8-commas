@@ -25,3 +25,5 @@ image[:, :, 0]
 image[:,]
 
 image[:,:,]
+
+lambda x, :
