@@ -1,7 +1,11 @@
 0.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Refactor single/multi tuple/subscript to simply count commas in all cases.
+- Prohibit trailing commas in lambda parameter lists.
+- Fix a missing trailing comma false positive in subcripts with slices.
+- Fix a prohibited trailing comma false positve in subscripts with slices.
+- All (`Issue #48 <https://github.com/flake8-commas/flake8-commas/pull/48>`_)
 
 
 0.5.0 (2018-01-02)
