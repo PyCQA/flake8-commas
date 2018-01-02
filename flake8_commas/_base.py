@@ -56,6 +56,7 @@ class FalsyObj(object):
 TUPLE_OR_PARENTH_FORM = FalsyObj()
 SUBSCRIPT_ELEMENT = FalsyObj()
 SUBSCRIPT_TUPLE = object()
+SINGLE_ELEMENT_TUPLE = object()
 SUBSCRIPT = {SUBSCRIPT_ELEMENT, SUBSCRIPT_TUPLE}
 LAMBDA_EXPR = FalsyObj()
 
@@ -239,12 +240,19 @@ def get_comma_errors(tokens):
         if token.type == FOR:
             stack[-1] = Context(False, False)
 
+        multi_tuple_found = (
+            stack[-1].comma == SINGLE_ELEMENT_TUPLE and
+            token.type == COMMA
+        )
+        if multi_tuple_found:
+            stack[-1] = stack[-1]._replace(comma=True)
+
         comma_found = (
             stack[-1].comma == TUPLE_OR_PARENTH_FORM and
             token.type == COMMA
         )
         if comma_found:
-            stack[-1] = stack[-1]._replace(comma=True)
+            stack[-1] = stack[-1]._replace(comma=SINGLE_ELEMENT_TUPLE)
 
         subscript_tuple_found = (
             stack[-1].comma == SUBSCRIPT_ELEMENT and
@@ -260,6 +268,19 @@ def get_comma_errors(tokens):
             (token.type in CLOSING and stack[-1].comma) or
             (token.type == COLON and stack[-1].comma == SUBSCRIPT_TUPLE)
         )
+
+        comma_prohibited = (
+            comma_allowed and
+            prev_1.type == COMMA and
+            stack[-1].comma != SINGLE_ELEMENT_TUPLE
+        )
+        if comma_prohibited:
+            end_row, end_col = prev_1.token.end
+            yield {
+                'message': 'C819 trailing comma prohibited',
+                'line': end_row,
+                'col': end_col,
+            }
 
         comma_required = (
             comma_allowed and
