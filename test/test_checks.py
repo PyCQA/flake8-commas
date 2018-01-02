@@ -241,6 +241,7 @@ def test_prohibited():
        {'col': 13, 'line': 14, 'message': 'C819 trailing comma prohibited'},
        {'col': 18, 'line': 16, 'message': 'C819 trailing comma prohibited'},
        {'col': 6, 'line': 21, 'message': 'C819 trailing comma prohibited'},
+       {'col': 10, 'line': 27, 'message': 'C819 trailing comma prohibited'},
     ]
 
 
