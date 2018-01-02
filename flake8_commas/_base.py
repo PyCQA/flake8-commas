@@ -254,10 +254,11 @@ def get_comma_errors(tokens):
             stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
         )
 
-        comma_prohibited = (
-            comma_allowed and
-            prev_1.type == COMMA and
-            (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
+        comma_prohibited = prev_1.type == COMMA and (
+            (
+                comma_allowed and
+                (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
+            ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
         )
         if comma_prohibited:
             end_row, end_col = prev_1.token.end
