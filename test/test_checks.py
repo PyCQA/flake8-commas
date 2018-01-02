@@ -100,6 +100,7 @@ def test_no_comma_required_multiline_subscript():
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
         {'col': 14, 'line': 27, 'message': 'C812 missing trailing comma'},
+        {'col': 14, 'line': 34, 'message': 'C812 missing trailing comma'},
     ]
 
 
