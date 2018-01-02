@@ -2,7 +2,7 @@ multiline_index_access[
     "fine",
     "not fine"
     :
-    "fine"
+    "not fine"
 ]
 
 multiline_index_access[
