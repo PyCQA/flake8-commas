@@ -249,16 +249,9 @@ def get_comma_errors(tokens):
         if token.type == UNPACK:
             stack[-1] = stack[-1]._replace(unpack=True)
 
-        comma_allowed = (
-            (token.type in CLOSING and (
-                stack[-1].comma or
-                stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
-            )) or
-            (
-                token.type == COLON and
-                stack[-1].comma == SUBSCRIPT and
-                stack[-1].n >= 1
-            )
+        comma_allowed = token.type in CLOSING and (
+            stack[-1].comma or
+            stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
         )
 
         comma_prohibited = (
@@ -293,9 +286,6 @@ def get_comma_errors(tokens):
                 'line': end_row,
                 'col': end_col,
             }
-
-        if stack[-1].comma == SUBSCRIPT and token.type == COLON:
-            stack[-1] = stack[-1]._replace(n=0)
 
         pop_stack = (
             token.type in CLOSING or
