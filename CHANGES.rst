@@ -1,7 +1,8 @@
 0.4.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Remove EOL Python 3.3.
+  (`Issue #47 <https://github.com/flake8-commas/flake8-commas/pull/47>`_)
 
 
 0.4.3 (2017-04-25)
