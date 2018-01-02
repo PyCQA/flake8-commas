@@ -108,11 +108,8 @@ def test_comma_required_multiline_subscript_with_slice():
     fixture = 'data/multiline_subscript_slice.py'
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
-        {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'},
         {'col': 14, 'line': 5, 'message': 'C812 missing trailing comma'},
         {'col': 14, 'line': 33, 'message': 'C812 missing trailing comma'},
-        {'col': 14, 'line': 41, 'message': 'C812 missing trailing comma'},
-        {'col': 14, 'line': 54, 'message': 'C812 missing trailing comma'},
     ]
 
 

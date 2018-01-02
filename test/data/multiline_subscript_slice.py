@@ -1,6 +1,6 @@
 multiline_index_access[
     "fine",
-    "not fine"
+    "fine"
     :
     "not fine"
 ]
@@ -12,25 +12,6 @@ multiline_index_access[
     "fine"
     :
     "fine"
-]
-
-multiline_index_access[
-    "fine"
-    "fine",
-    :
-    "fine",
-    :
-    "fine",
-]
-
-multiline_index_access[
-    "fine"
-    "fine",
-    :
-    "fine"
-    :
-    "fine",
-    "not fine"
 ]
 
 multiline_index_access[
@@ -38,7 +19,26 @@ multiline_index_access[
     "fine",
     :
     "fine",
+    :
+    "fine",
+]
+
+multiline_index_access[
+    "fine"
+    "fine",
+    :
+    "fine"
+    :
+    "fine",
     "not fine"
+]
+
+multiline_index_access[
+    "fine"
+    "fine",
+    :
+    "fine",
+    "fine"
     :
     "fine",
 ]
@@ -51,7 +51,7 @@ multiline_index_access[
     lambda fine,
     fine,
     fine: (0,),
-    "not fine"
+    "fine"
     :
     "fine",
 ]
