@@ -70,6 +70,10 @@ class SimpleToken(object):
 Context = collections.namedtuple('Context', ['comma', 'unpack'])
 
 
+def context(comma=False, unpack=False):
+    return Context(comma=comma, unpack=unpack)
+
+
 NEW_LINE = 'new-line'
 COMMA = ','
 OPENING_BRACKET = '('
@@ -172,14 +176,14 @@ def process_parentheses(token, prev_1, prev_2):
         )
         if is_function:
             if prev_2.type == DEF:
-                return [Context(FUNCTION_DEF, False)]
+                return [context(FUNCTION_DEF)]
             tk_string = previous_token.type
             if tk_string == PY2_ONLY_ERROR:
-                return [Context(PY2_ONLY_ERROR, False)]
+                return [context(PY2_ONLY_ERROR)]
             if tk_string == PY3K_ONLY_ERROR:
-                return [Context(PY3K_ONLY_ERROR, False)]
+                return [context(PY3K_ONLY_ERROR)]
         else:
-            return [Context(TUPLE_OR_PARENTH_FORM, False)]
+            return [context(TUPLE_OR_PARENTH_FORM)]
 
     if token.type == OPENING_SQUARE_BRACKET:
         is_index_access = (
@@ -192,9 +196,9 @@ def process_parentheses(token, prev_1, prev_2):
             )
         )
         if is_index_access:
-            return [Context(SUBSCRIPT_ELEMENT, False)]
+            return [context(SUBSCRIPT_ELEMENT)]
 
-    return [Context(True, False)]
+    return [context(True)]
 
 
 def get_tokens(filename):
@@ -222,7 +226,7 @@ def get_noqa_lines(tokens):
 def get_comma_errors(tokens):
     tokens = simple_tokens(tokens)
 
-    stack = [Context(False, False)]
+    stack = [context()]
 
     window = collections.deque([NONE, NONE], maxlen=3)
 
@@ -235,10 +239,10 @@ def get_comma_errors(tokens):
             )
 
         if token.type == LAMBDA:
-            stack.append(Context(LAMBDA_EXPR, False))
+            stack.append(context(LAMBDA_EXPR))
 
         if token.type == FOR:
-            stack[-1] = Context(False, False)
+            stack[-1] = context()
 
         multi_tuple_found = (
             stack[-1].comma == SINGLE_ELEMENT_TUPLE and
