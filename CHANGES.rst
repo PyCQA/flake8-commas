@@ -1,5 +1,5 @@
-0.5.1 (unreleased)
-------------------
+0.5.1.a1 (2018-01-02)
+---------------------
 
 - Refactor single/multi tuple/subscript to simply count commas in all cases,
   prohibit trailing commas in lambda parameter lists,
