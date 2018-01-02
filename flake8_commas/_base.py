@@ -54,10 +54,8 @@ class FalsyObj(object):
 
 
 TUPLE_OR_PARENTH_FORM = FalsyObj()
-SUBSCRIPT_ELEMENT = FalsyObj()
-SUBSCRIPT_TUPLE = object()
-SINGLE_ELEMENT_TUPLE = object()
-SUBSCRIPT = {SUBSCRIPT_ELEMENT, SUBSCRIPT_TUPLE}
+SUBSCRIPT = FalsyObj()
+TUPLE_ISH = {SUBSCRIPT, TUPLE_OR_PARENTH_FORM}
 LAMBDA_EXPR = FalsyObj()
 
 
@@ -67,7 +65,11 @@ class SimpleToken(object):
         self.type = type
 
 
-Context = collections.namedtuple('Context', ['comma', 'unpack'])
+Context = collections.namedtuple('Context', ['comma', 'unpack', 'n'])
+
+
+def context(comma=False, unpack=False, n=0):
+    return Context(comma=comma, unpack=unpack, n=n)
 
 
 NEW_LINE = 'new-line'
@@ -148,7 +150,8 @@ def simple_tokens(tokens):
 
 ERRORS = {
     True: ('C812', 'missing trailing comma'),
-    SUBSCRIPT_TUPLE: ('C812', 'missing trailing comma'),
+    SUBSCRIPT: ('C812', 'missing trailing comma'),
+    TUPLE_OR_PARENTH_FORM: ('C812', 'missing trailing comma'),
     FUNCTION_DEF: ('C812', 'missing trailing comma'),
     PY3K_ONLY_ERROR: ('C813', 'missing trailing comma in Python 3'),
     PY2_ONLY_ERROR: ('C814', 'missing trailing comma in Python 2'),
@@ -172,14 +175,14 @@ def process_parentheses(token, prev_1, prev_2):
         )
         if is_function:
             if prev_2.type == DEF:
-                return [Context(FUNCTION_DEF, False)]
+                return [context(FUNCTION_DEF)]
             tk_string = previous_token.type
             if tk_string == PY2_ONLY_ERROR:
-                return [Context(PY2_ONLY_ERROR, False)]
+                return [context(PY2_ONLY_ERROR)]
             if tk_string == PY3K_ONLY_ERROR:
-                return [Context(PY3K_ONLY_ERROR, False)]
+                return [context(PY3K_ONLY_ERROR)]
         else:
-            return [Context(TUPLE_OR_PARENTH_FORM, False)]
+            return [context(TUPLE_OR_PARENTH_FORM)]
 
     if token.type == OPENING_SQUARE_BRACKET:
         is_index_access = (
@@ -192,9 +195,9 @@ def process_parentheses(token, prev_1, prev_2):
             )
         )
         if is_index_access:
-            return [Context(SUBSCRIPT_ELEMENT, False)]
+            return [context(SUBSCRIPT)]
 
-    return [Context(True, False)]
+    return [context(True)]
 
 
 def get_tokens(filename):
@@ -222,7 +225,7 @@ def get_noqa_lines(tokens):
 def get_comma_errors(tokens):
     tokens = simple_tokens(tokens)
 
-    stack = [Context(False, False)]
+    stack = [context()]
 
     window = collections.deque([NONE, NONE], maxlen=3)
 
@@ -235,44 +238,27 @@ def get_comma_errors(tokens):
             )
 
         if token.type == LAMBDA:
-            stack.append(Context(LAMBDA_EXPR, False))
+            stack.append(context(LAMBDA_EXPR))
 
         if token.type == FOR:
-            stack[-1] = Context(False, False)
+            stack[-1] = context()
 
-        multi_tuple_found = (
-            stack[-1].comma == SINGLE_ELEMENT_TUPLE and
-            token.type == COMMA
-        )
-        if multi_tuple_found:
-            stack[-1] = stack[-1]._replace(comma=True)
-
-        comma_found = (
-            stack[-1].comma == TUPLE_OR_PARENTH_FORM and
-            token.type == COMMA
-        )
-        if comma_found:
-            stack[-1] = stack[-1]._replace(comma=SINGLE_ELEMENT_TUPLE)
-
-        subscript_tuple_found = (
-            stack[-1].comma == SUBSCRIPT_ELEMENT and
-            token.type == COMMA
-        )
-        if subscript_tuple_found:
-            stack[-1] = stack[-1]._replace(comma=SUBSCRIPT_TUPLE)
+        if token.type == COMMA:
+            stack[-1] = stack[-1]._replace(n=stack[-1].n + 1)
 
         if token.type == UNPACK:
             stack[-1] = stack[-1]._replace(unpack=True)
 
-        comma_allowed = (
-            (token.type in CLOSING and stack[-1].comma) or
-            (token.type == COLON and stack[-1].comma == SUBSCRIPT_TUPLE)
+        comma_allowed = token.type in CLOSING and (
+            stack[-1].comma or
+            stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
         )
 
-        comma_prohibited = (
-            comma_allowed and
-            prev_1.type == COMMA and
-            stack[-1].comma != SINGLE_ELEMENT_TUPLE
+        comma_prohibited = prev_1.type == COMMA and (
+            (
+                comma_allowed and
+                (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
+            ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
         )
         if comma_prohibited:
             end_row, end_col = prev_1.token.end
@@ -301,9 +287,6 @@ def get_comma_errors(tokens):
                 'line': end_row,
                 'col': end_col,
             }
-
-        if stack[-1].comma == SUBSCRIPT_TUPLE and token.type == COLON:
-            stack[-1] = stack[-1]._replace(comma=SUBSCRIPT_ELEMENT)
 
         pop_stack = (
             token.type in CLOSING or

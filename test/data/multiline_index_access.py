@@ -31,5 +31,5 @@ multiline_index_access[
     "fine",
     "fine",
     :
-    "fine"
+    "not good"
 ]

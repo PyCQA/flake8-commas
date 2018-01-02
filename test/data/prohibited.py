@@ -19,3 +19,11 @@ def bah(ham, spam, ):
 (0, )
 
 (0, 1, )
+
+image[:, :, 0]
+
+image[:,]
+
+image[:,:,]
+
+lambda x, :
