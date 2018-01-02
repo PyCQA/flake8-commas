@@ -229,5 +229,19 @@ def test_py3():
     assert list(get_comma_errors(get_tokens(filename))) == []
 
 
+def test_prohibited():
+    filename = get_absolute_path('data/prohibited.py')
+    assert list(get_comma_errors(get_tokens(filename))) == [
+       {'col': 21, 'line': 1, 'message': 'C819 trailing comma prohibited'},
+       {'col': 13, 'line': 3, 'message': 'C819 trailing comma prohibited'},
+       {'col': 18, 'line': 5, 'message': 'C819 trailing comma prohibited'},
+       {'col': 6, 'line': 10, 'message': 'C819 trailing comma prohibited'},
+       {'col': 21, 'line': 12, 'message': 'C819 trailing comma prohibited'},
+       {'col': 13, 'line': 14, 'message': 'C819 trailing comma prohibited'},
+       {'col': 18, 'line': 16, 'message': 'C819 trailing comma prohibited'},
+       {'col': 6, 'line': 21, 'message': 'C819 trailing comma prohibited'},
+    ]
+
+
 def get_absolute_path(filepath):
     return os.path.join(os.path.dirname(__file__), filepath)

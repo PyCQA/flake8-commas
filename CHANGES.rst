@@ -3,6 +3,9 @@
 
 - Remove EOL Python 3.3.
   (`Issue #47 <https://github.com/flake8-commas/flake8-commas/pull/47>`_)
+- Prohibit trailing commas where there is no following new line
+  (or forming a single element tuple).
+  (`Issue #46 <https://github.com/flake8-commas/flake8-commas/pull/46>`_)
 
 
 0.4.3 (2017-04-25)
