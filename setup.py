@@ -27,7 +27,7 @@ setup(
     maintainer_email='flake8-commas@graingert.co.uk',
     version='1.0.1.dev0',
     install_requires=['flake8>=2, <4.0.0'],
-    url='https://github.com/flake8-commas/flake8-commas/',
+    url='https://github.com/PyCQA/flake8-commas/',
     long_description=readme + '\n\n' + history,
     description='Flake8 lint for trailing commas.',
     packages=['flake8_commas'],
