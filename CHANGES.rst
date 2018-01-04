@@ -1,7 +1,7 @@
 0.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- No changes from 0.5.1, just releasing the first major version.
 
 
 0.5.1 (2018-01-02)
