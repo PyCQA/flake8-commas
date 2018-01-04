@@ -9,3 +9,11 @@ def test_call_flake8(tmpdir):
         stderr=subprocess.STDOUT,
     )
     assert output == b''
+
+
+def test_call_flake8_version():
+    output = subprocess.check_output(
+        ['flake8', '--version'],
+        stderr=subprocess.STDOUT,
+    )
+    assert b'flake8_commas: ' in output
