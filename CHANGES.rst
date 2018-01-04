@@ -1,7 +1,8 @@
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Hide ._base from flake8 --version.
+  (`Issue #45 <https://github.com/PyCQA/flake8-commas/issue/45>`_)
 
 
 1.0.0 (2018-01-04)
