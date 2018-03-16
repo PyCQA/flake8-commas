@@ -31,5 +31,7 @@ errors for languages you don't use in your flake8 config:
 +------+---------------------------------------+
 | C816 | missing trailing comma in Python 3.6+ |
 +------+---------------------------------------+
+| C818 | bare tuple prohibited                 |
++------+---------------------------------------+
 | C819 | trailing comma prohibited             |
 +------+---------------------------------------+
