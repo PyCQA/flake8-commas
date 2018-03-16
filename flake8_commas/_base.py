@@ -260,15 +260,24 @@ def get_comma_errors(tokens):
                 (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
             ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
         )
-        comma_prohibited = comma_prohibited or (
-            token.token.type == tokenize.NEWLINE and
-            prev_1.type == COMMA
-        )
 
         if comma_prohibited:
             end_row, end_col = prev_1.token.end
             yield {
                 'message': 'C819 trailing comma prohibited',
+                'line': end_row,
+                'col': end_col,
+            }
+
+        bare_comma_prohibited = (
+            token.token.type == tokenize.NEWLINE and
+            prev_1.type == COMMA
+        )
+
+        if bare_comma_prohibited:
+            end_row, end_col = prev_1.token.end
+            yield {
+                'message': 'C818 bare tuple prohibited',
                 'line': end_row,
                 'col': end_col,
             }

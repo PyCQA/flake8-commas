@@ -241,7 +241,27 @@ def test_prohibited():
        {'col': 6, 'line': 21, 'message': 'C819 trailing comma prohibited'},
        {'col': 10, 'line': 27, 'message': 'C819 trailing comma prohibited'},
        {'col': 9, 'line': 29, 'message': 'C819 trailing comma prohibited'},
-       {'col': 8, 'line': 31, 'message': 'C819 trailing comma prohibited'},
+    ]
+
+
+def test_bare():
+    filename = get_absolute_path('data/bare.py')
+    assert list(get_comma_errors(get_tokens(filename))) == [
+       {'col': 8, 'line': 7, 'message': 'C818 bare tuple prohibited'},
+       {'col': 19, 'line': 9, 'message': 'C818 bare tuple prohibited'},
+       {'col': 9, 'line': 15, 'message': 'C818 bare tuple prohibited'},
+       {'col': 8, 'line': 17, 'message': 'C818 bare tuple prohibited'},
+       {'col': 9, 'line': 18, 'message': 'C818 bare tuple prohibited'},
+       {'col': 12, 'line': 19, 'message': 'C818 bare tuple prohibited'},
+       {'col': 8, 'line': 21, 'message': 'C818 bare tuple prohibited'},
+       {'col': 12, 'line': 23, 'message': 'C818 bare tuple prohibited'},
+       {'col': 8, 'line': 25, 'message': 'C818 bare tuple prohibited'},
+       {'col': 9, 'line': 26, 'message': 'C818 bare tuple prohibited'},
+       {'col': 12, 'line': 31, 'message': 'C818 bare tuple prohibited'},
+       {'col': 10, 'line': 35, 'message': 'C818 bare tuple prohibited'},
+       {'col': 10, 'line': 55, 'message': 'C812 missing trailing comma'},
+       {'col': 32, 'line': 63, 'message': 'C818 bare tuple prohibited'},
+       {'col': 26, 'line': 65, 'message': 'C818 bare tuple prohibited'},
     ]
 
 
