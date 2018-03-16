@@ -260,7 +260,6 @@ def get_comma_errors(tokens):
                 (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
             ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
         )
-
         if comma_prohibited:
             end_row, end_col = prev_1.token.end
             yield {
