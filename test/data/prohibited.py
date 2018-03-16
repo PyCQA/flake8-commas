@@ -27,3 +27,5 @@ image[:,]
 image[:,:,]
 
 lambda x, :
+
+baz = 0,
