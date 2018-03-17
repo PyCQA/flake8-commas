@@ -247,12 +247,18 @@ def test_prohibited():
 def test_bare():
     filename = get_absolute_path('data/bare.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-       {'col': 8, 'line': 7, 'message': 'C818 bare tuple prohibited'},
-       {'col': 19, 'line': 9, 'message': 'C818 bare tuple prohibited'},
-       {'col': 8, 'line': 16, 'message': 'C818 bare tuple prohibited'},
-       {'col': 10, 'line': 20, 'message': 'C818 bare tuple prohibited'},
-       {'col': 32, 'line': 27, 'message': 'C818 bare tuple prohibited'},
-       {'col': 26, 'line': 29, 'message': 'C818 bare tuple prohibited'},
+       {'col': 8, 'line': 7,
+        'message': 'C818 trailing comma on bare tuple prohibited'},
+       {'col': 19, 'line': 9,
+        'message': 'C818 trailing comma on bare tuple prohibited'},
+       {'col': 8, 'line': 16,
+        'message': 'C818 trailing comma on bare tuple prohibited'},
+       {'col': 10, 'line': 20,
+        'message': 'C818 trailing comma on bare tuple prohibited'},
+       {'col': 32, 'line': 27,
+        'message': 'C818 trailing comma on bare tuple prohibited'},
+       {'col': 26, 'line': 29,
+        'message': 'C818 trailing comma on bare tuple prohibited'},
     ]
 
 

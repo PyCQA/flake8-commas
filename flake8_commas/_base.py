@@ -276,7 +276,7 @@ def get_comma_errors(tokens):
         if bare_comma_prohibited:
             end_row, end_col = prev_1.token.end
             yield {
-                'message': 'C818 bare tuple prohibited',
+                'message': 'C818 trailing comma on bare tuple prohibited',
                 'line': end_row,
                 'col': end_col,
             }

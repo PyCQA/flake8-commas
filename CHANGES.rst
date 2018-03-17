@@ -5,7 +5,7 @@
   (`Issue #45 <https://github.com/PyCQA/flake8-commas/issue/45>`_)
 - Update URL to https://github.com/PyCQA/flake8-commas/.
   (`Issue #51 <https://github.com/PyCQA/flake8-commas/pull/51>`_)
-- Add check for bare tuples - C818
+- Add check for trailing commas on bare tuples - C818
   (`PR #52 <https://github.com/PyCQA/flake8-commas/pull/52>`_)
 
 
