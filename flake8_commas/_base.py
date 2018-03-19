@@ -268,6 +268,19 @@ def get_comma_errors(tokens):
                 'col': end_col,
             }
 
+        bare_comma_prohibited = (
+            token.token.type == tokenize.NEWLINE and
+            prev_1.type == COMMA
+        )
+
+        if bare_comma_prohibited:
+            end_row, end_col = prev_1.token.end
+            yield {
+                'message': 'C818 trailing comma on bare tuple prohibited',
+                'line': end_row,
+                'col': end_col,
+            }
+
         comma_required = (
             comma_allowed and
             prev_1.type == NEW_LINE and
