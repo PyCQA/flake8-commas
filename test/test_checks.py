@@ -8,6 +8,7 @@ C813 = 'C813 missing trailing comma in Python 3'
 C814 = 'C814 missing trailing comma in Python 2'
 C815 = 'C815 missing trailing comma in Python 3.5+'
 C816 = 'C816 missing trailing comma in Python 3.6+'
+C818 = 'C818 trailing comma on bare tuple prohibited'
 
 
 def test_get_noqa_lines():
@@ -248,18 +249,13 @@ def test_bare():
     # Tests inspired by flake8_tuple https://git.io/vxstN
     filename = get_absolute_path('data/bare.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
-       {'col': 8, 'line': 7,
-        'message': 'C818 trailing comma on bare tuple prohibited'},
-       {'col': 19, 'line': 9,
-        'message': 'C818 trailing comma on bare tuple prohibited'},
-       {'col': 8, 'line': 16,
-        'message': 'C818 trailing comma on bare tuple prohibited'},
-       {'col': 10, 'line': 20,
-        'message': 'C818 trailing comma on bare tuple prohibited'},
-       {'col': 32, 'line': 27,
-        'message': 'C818 trailing comma on bare tuple prohibited'},
-       {'col': 26, 'line': 29,
-        'message': 'C818 trailing comma on bare tuple prohibited'},
+       {'col': 8, 'line': 7, 'message': C818},
+       {'col': 19, 'line': 9, 'message': C818},
+       {'col': 8, 'line': 16, 'message': C818},
+       {'col': 10, 'line': 20, 'message': C818},
+       {'col': 32, 'line': 27, 'message': C818},
+       {'col': 26, 'line': 29, 'message': C818},
+       {'col': 17, 'line': 32, 'message': C818},
     ]
 
 
