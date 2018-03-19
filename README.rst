@@ -1,5 +1,5 @@
-Flake8 Extension to enforce trailing commas.
-============================================
+Flake8 Extension to enforce better comma placement.
+===================================================
 
 Usage
 -----
