@@ -27,3 +27,6 @@ from foo import bar, baz
 group_by = function_call('arg'),
 
 group_by = ('foobar' * 3),
+
+def foo():
+    return False,

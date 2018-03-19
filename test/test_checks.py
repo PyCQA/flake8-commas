@@ -255,6 +255,7 @@ def test_bare():
        {'col': 10, 'line': 20, 'message': C818},
        {'col': 32, 'line': 27, 'message': C818},
        {'col': 26, 'line': 29, 'message': C818},
+       {'col': 17, 'line': 32, 'message': C818},
     ]
 
 
