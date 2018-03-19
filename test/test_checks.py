@@ -245,6 +245,7 @@ def test_prohibited():
 
 
 def test_bare():
+    # Tests inspired by flake8_tuple https://git.io/vxstN
     filename = get_absolute_path('data/bare.py')
     assert list(get_comma_errors(get_tokens(filename))) == [
        {'col': 8, 'line': 7,
