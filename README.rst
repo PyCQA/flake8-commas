@@ -35,3 +35,18 @@ errors for languages you don't use in your flake8 config:
 +------+-----------------------------------------+
 | C819 | trailing comma prohibited               |
 +------+-----------------------------------------+
+
+Examples
+--------
+
+.. code:: Python
+
+    lookup_table = {
+        'key1': 'value',
+        'key2': 'something'  # <-- missing a trailing comma
+    }
+
+    json_data = json.dumps({
+        "key": "value",
+    }),                      # <-- incorrect trailing comma. json_data is now a tuple. Likely by accident.
+
