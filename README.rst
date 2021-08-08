@@ -1,6 +1,10 @@
 Flake8 Extension to enforce better comma placement.
 ===================================================
 
+.. image:: https://badges.gitter.im/PyCQA/flake8-commas.svg
+   :alt: Join the chat at https://gitter.im/PyCQA/flake8-commas
+   :target: https://gitter.im/PyCQA/flake8-commas?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 Usage
 -----
 
