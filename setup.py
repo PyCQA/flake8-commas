@@ -25,7 +25,7 @@ setup(
     author_email='trevor@trevorcreech.com',
     maintainer='Thomas Grainger',
     maintainer_email='flake8-commas@graingert.co.uk',
-    version='2.1.0',
+    version='2.1.1.dev0',
     install_requires=['flake8>=2'],
     url='https://github.com/PyCQA/flake8-commas/',
     long_description=readme + '\n\n' + history,
