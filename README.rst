@@ -1,12 +1,13 @@
 Flake8 Extension to enforce better comma placement.
 ===================================================
 
-.. image:: http://unmaintained.tech/badge.svg
-  :target: http://unmaintained.tech
+.. image:: https://unmaintained.tech/badge.svg
+  :target: https://unmaintained.tech
   :alt: No Maintenance Intended
+  
 
-**Note:** `Black <https://pypi.org/project/black/>__, the uncompromising Python code
-formatter, or `add-trailing-comma <https://github.com/asottile/add-trailing-comma>__`
+**Note:** `Black <https://pypi.org/project/black/>`_, the uncompromising Python code
+formatter, or  `add-trailing-comma <https://github.com/asottile/add-trailing-comma>`_
 can do all this comma insertion automatically. We recommend you use one of those tools
 instead.
 
