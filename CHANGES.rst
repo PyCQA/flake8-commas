@@ -1,4 +1,4 @@
-2.0.1 (unreleased)
+2.1.0 (2021-10-13)
 ------------------
 
 - Remove upper bound on flake8.
