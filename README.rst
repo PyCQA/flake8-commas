@@ -1,6 +1,9 @@
 Flake8 Extension to enforce better comma placement.
 ===================================================
 
+**Note:** `Black <https://pypi.org/project/black/>__, the uncompromising Python code
+formatter, can do all this comma insertion automatically. We recommend you use it.
+
 Usage
 -----
 
