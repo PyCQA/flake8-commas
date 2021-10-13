@@ -5,6 +5,11 @@ Flake8 Extension to enforce better comma placement.
   :target: http://unmaintained.tech
   :alt: No Maintenance Intended
 
+**Note:** `Black <https://pypi.org/project/black/>__, the uncompromising Python code
+formatter, or `add-trailing-comma <https://github.com/asottile/add-trailing-comma>__`
+can do all this comma insertion automatically. We recommend you use one of those tools
+instead.
+
 Usage
 -----
 
