@@ -1,6 +1,10 @@
 Flake8 Extension to enforce better comma placement.
 ===================================================
 
+.. image:: http://unmaintained.tech/badge.svg
+  :target: http://unmaintained.tech
+  :alt: No Maintenance Intended
+
 Usage
 -----
 
