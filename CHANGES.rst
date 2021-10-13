@@ -6,6 +6,7 @@
 - Note: this project is no longer maintained, and now black
   or https://github.com/asottile/add-trailing-comma is recommended instead.
   (`Issue #63 <https://github.com/PyCQA/flake8-commas/pull/63>`_)
+  (`Issue #69 <https://github.com/PyCQA/flake8-commas/pull/69/`_)
 
 2.0.0 (2018-03-19)
 ------------------
