@@ -1,15 +1,8 @@
 Flake8 Extension to enforce better comma placement.
 ===================================================
 
-.. image:: https://unmaintained.tech/badge.svg
-  :target: https://unmaintained.tech
-  :alt: No Maintenance Intended
-  
-
-**Note:** `Black <https://pypi.org/project/black/>`_, the uncompromising Python code
-formatter, or  `add-trailing-comma <https://github.com/asottile/add-trailing-comma>`_
-can do all this comma insertion automatically. We recommend you use one of those tools
-instead.
+**Note:** Forked from PyCQA/flake8-commas to add support for Python 3.11, match statement, and other features. Support
+for Python version below 3.7 has been dropped, as well as older (2.x.y) versions of flake8.
 
 Usage
 -----
@@ -18,7 +11,7 @@ If you are using flake8 it's as easy as:
 
 .. code:: shell
 
-    pip install flake8-commas
+    pip install https://github.com/karamanolev/flake8-commas.git
 
 Now you can avoid those annoying merge conflicts on dictionary and list diffs.
 

@@ -1,16 +1,6 @@
-import tokenize
 import collections
 import token as mod_token
-
-try:
-    import pycodestyle
-except ImportError:
-    import pep8 as pycodestyle
-
-try:
-    from flake8.engine import pep8 as stdin_utils
-except ImportError:
-    from flake8 import utils as stdin_utils
+import tokenize
 
 import pkg_resources
 
@@ -29,14 +19,15 @@ PYTHON_2_KWDS = {
     'and', 'as', 'assert', 'break', 'class', 'continue', 'def', 'del', 'elif',
     'else', 'except', 'exec', 'finally', 'for', 'from', 'global', 'if',
     'import', 'in', 'is', 'lambda', 'not', 'or', 'pass', 'print', 'raise',
-    'return', 'try', 'while', 'with', 'yield',
+    'return', 'try', 'while', 'with', 'yield', 'case', 'match',
 }
 
 PYTHON_3_KWDS = {
     'False', 'None', 'True', 'and', 'as', 'assert', 'break', 'class',
     'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for',
     'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not',
-    'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
+    'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield', 'case',
+    'match',
 }
 
 KWD_LIKE_FUNCTION = {'import'}
@@ -78,7 +69,7 @@ OPENING_BRACKET = '('
 OPENING_SQUARE_BRACKET = '['
 SOME_CLOSING = 'some-closing'
 SOME_OPENING = 'some-opening'
-OPENING = {SOME_OPENING,  OPENING_BRACKET, OPENING_SQUARE_BRACKET}
+OPENING = {SOME_OPENING, OPENING_BRACKET, OPENING_SQUARE_BRACKET}
 CLOSING = {SOME_CLOSING}
 BACK_TICK = '`'
 CLOSE_ATOM = CLOSING | {BACK_TICK}
@@ -165,13 +156,13 @@ def process_parentheses(token, prev_1, prev_2):
 
     if token.type == OPENING_BRACKET:
         is_function = (
-            previous_token and
-            (
-                (previous_token.type in CLOSE_ATOM) or
+                previous_token and
                 (
-                    previous_token.type in FUNCTION
+                        (previous_token.type in CLOSE_ATOM) or
+                        (
+                                previous_token.type in FUNCTION
+                        )
                 )
-            )
         )
         if is_function:
             if prev_2.type == DEF:
@@ -186,32 +177,18 @@ def process_parentheses(token, prev_1, prev_2):
 
     if token.type == OPENING_SQUARE_BRACKET:
         is_index_access = (
-            previous_token and
-            (
-                (previous_token.type in CLOSING) or
+                previous_token and
                 (
-                    previous_token.type == NAMED
+                        (previous_token.type in CLOSING) or
+                        (
+                                previous_token.type == NAMED
+                        )
                 )
-            )
         )
         if is_index_access:
             return [context(SUBSCRIPT)]
 
     return [context(True)]
-
-
-def get_tokens(filename):
-    if filename == 'stdin':
-        file_contents = stdin_utils.stdin_get_value().splitlines(True)
-    else:
-        file_contents = pycodestyle.readlines(filename)
-    file_contents_iter = iter(file_contents)
-
-    def file_contents_next():
-        return next(file_contents_iter)
-
-    for t in tokenize.generate_tokens(file_contents_next):
-        yield Token(t)
 
 
 def no_qa_comment(token):
@@ -250,15 +227,15 @@ def get_comma_errors(tokens):
             stack[-1] = stack[-1]._replace(unpack=True)
 
         comma_allowed = token.type in CLOSING and (
-            stack[-1].comma or
-            stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
+                stack[-1].comma or
+                stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
         )
 
         comma_prohibited = prev_1.type == COMMA and (
-            (
-                comma_allowed and
-                (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
-            ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
+                (
+                        comma_allowed and
+                        (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
+                ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
         )
         if comma_prohibited:
             end_row, end_col = prev_1.token.end
@@ -269,8 +246,8 @@ def get_comma_errors(tokens):
             }
 
         bare_comma_prohibited = (
-            token.token.type == tokenize.NEWLINE and
-            prev_1.type == COMMA
+                token.token.type == tokenize.NEWLINE and
+                prev_1.type == COMMA
         )
 
         if bare_comma_prohibited:
@@ -282,10 +259,10 @@ def get_comma_errors(tokens):
             }
 
         comma_required = (
-            comma_allowed and
-            prev_1.type == NEW_LINE and
-            prev_2.type != COMMA and
-            prev_2.type not in OPENING
+                comma_allowed and
+                prev_1.type == NEW_LINE and
+                prev_2.type != COMMA and
+                prev_2.type not in OPENING
         )
         if comma_required:
             end_row, end_col = prev_2.token.end
@@ -302,8 +279,8 @@ def get_comma_errors(tokens):
             }
 
         pop_stack = (
-            token.type in CLOSING or
-            (token.type == COLON and stack[-1].comma == LAMBDA_EXPR)
+                token.type in CLOSING or
+                (token.type == COLON and stack[-1].comma == LAMBDA_EXPR)
         )
         if pop_stack:
             stack.pop()
@@ -320,15 +297,8 @@ class CommaChecker(object):
 
     def run(self):
         file_tokens = self.tokens
-        filename = self.filename
         noqa_line_numbers = ()
-        tokens = None
-
-        if file_tokens is None:  # flake8 2.x
-            tokens = list(get_tokens(filename))
-            noqa_line_numbers = get_noqa_lines(tokens)
-        else:
-            tokens = (Token(t) for t in file_tokens)
+        tokens = (Token(t) for t in file_tokens)
 
         for error in get_comma_errors(tokens):
             if error.get('line') not in noqa_line_numbers:
@@ -341,7 +311,8 @@ class CommaChecker(object):
 
 
 class Token:
-    '''Python 2 and 3 compatible token'''
+    """Python 2 and 3 compatible token"""
+
     def __init__(self, token):
         self.token = token
 

@@ -1,7 +1,11 @@
 import os
+import tokenize
+
+import pycodestyle
+from flake8 import utils
 
 from flake8_commas._base import (
-    get_tokens, get_noqa_lines, get_comma_errors,
+    get_noqa_lines, get_comma_errors, Token,
 )
 
 C813 = 'C813 missing trailing comma in Python 3'
@@ -9,6 +13,20 @@ C814 = 'C814 missing trailing comma in Python 2'
 C815 = 'C815 missing trailing comma in Python 3.5+'
 C816 = 'C816 missing trailing comma in Python 3.6+'
 C818 = 'C818 trailing comma on bare tuple prohibited'
+
+
+def get_tokens(filename):
+    if filename == 'stdin':
+        file_contents = utils.stdin_get_value().splitlines(True)
+    else:
+        file_contents = pycodestyle.readlines(filename)
+    file_contents_iter = iter(file_contents)
+
+    def file_contents_next():
+        return next(file_contents_iter)
+
+    for t in tokenize.generate_tokens(file_contents_next):
+        yield Token(t)
 
 
 def test_get_noqa_lines():
@@ -156,6 +174,20 @@ def test_comma_required_even_if_you_use_or():
     filename = get_absolute_path(fixture)
     assert list(get_comma_errors(get_tokens(filename))) == [
         {'col': 14, 'line': 3, 'message': 'C812 missing trailing comma'},
+    ]
+
+
+def test_comma_not_required_in_multiline_case():
+    fixture = 'data/multiline_case.py'
+    filename = get_absolute_path(fixture)
+    assert list(get_comma_errors(get_tokens(filename))) == []
+
+
+def test_comma_required_in_multiline_case_nested():
+    fixture = 'data/multiline_case_bad.py'
+    filename = get_absolute_path(fixture)
+    assert list(get_comma_errors(get_tokens(filename))) == [
+        {'col': 20, 'line': 5, 'message': 'C812 missing trailing comma'},
     ]
 
 
