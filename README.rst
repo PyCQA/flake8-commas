@@ -2,7 +2,7 @@ Flake8 Extension to enforce better comma placement.
 ===================================================
 
 **Note:** Forked from PyCQA/flake8-commas to add support for Python 3.11, match statement, and other features. Support
-for Python version below 3.7 has been dropped, as well as older (2.x.y) versions of flake8.
+for Python version below 3.8 has been dropped, as well as older (2.x.y) versions of flake8.
 
 Usage
 -----
@@ -52,4 +52,3 @@ Examples
     json_data = json.dumps({
         "key": "value",
     }),                      # <-- incorrect trailing comma. json_data is now a tuple. Likely by accident.
-
