@@ -1,12 +1,22 @@
+from __future__ import annotations
+
 import collections
 import importlib.metadata
 import token as mod_token
 import tokenize
+from typing import Iterator, NamedTuple, TypedDict
 
 try:
     __version__ = importlib.metadata.version('flake8-commas')
 except importlib.metadata.PackageNotFoundError:
     __version__ = 'unknown'
+
+
+class ErrorDict(TypedDict):
+    message: str
+    line: int
+    col: int
+
 
 # A parenthesized expression list yields whatever that expression list
 # yields: if the list contains at least one comma, it yields a tuple;
@@ -49,7 +59,7 @@ LAMBDA_EXPR = FalsyObj()
 
 
 class SimpleToken(object):
-    def __init__(self, token, type):
+    def __init__(self, token: Token | None, type: str | None) -> None:
         self.token = token
         self.type = type
 
@@ -57,11 +67,10 @@ class SimpleToken(object):
         return f'SimpleToken({self.token!r}, {self.type!r})'
 
 
-Context = collections.namedtuple('Context', ['comma', 'unpack', 'n'])
-
-
-def context(comma=False, unpack=False, n=0):
-    return Context(comma=comma, unpack=unpack, n=n)
+class Context(NamedTuple):
+    comma: bool | FalsyObj | str = False
+    unpack: bool = False
+    n: int = 0
 
 
 NEW_LINE = 'new-line'
@@ -88,7 +97,7 @@ COLON = ':'
 NONE = SimpleToken(token=None, type=None)
 
 
-def get_type(token):
+def get_type(token: Token) -> str | None:
     type = token.type
     if type == tokenize.NL:
         return NEW_LINE
@@ -124,10 +133,10 @@ def get_type(token):
         return BACK_TICK
     if string == ':':
         return COLON
-    return
+    return None
 
 
-def simple_tokens(tokens):
+def simple_tokens(tokens: Iterator[Token]) -> Iterator[SimpleToken]:
     tokens = (t for t in tokens if t.type != tokenize.COMMENT)
 
     token = next(tokens)
@@ -152,7 +161,11 @@ ERRORS = {
 }
 
 
-def process_parentheses(token, prev_1, prev_2):
+def process_parentheses(
+    token: SimpleToken,
+    prev_1: SimpleToken,
+    prev_2: SimpleToken,
+) -> list[Context]:
     previous_token = prev_1
 
     if token.type == OPENING_BRACKET:
@@ -167,14 +180,14 @@ def process_parentheses(token, prev_1, prev_2):
         )
         if is_function:
             if prev_2.type == DEF:
-                return [context(FUNCTION_DEF)]
+                return [Context(FUNCTION_DEF)]
             tk_string = previous_token.type
             if tk_string == PY2_ONLY_ERROR:
-                return [context(PY2_ONLY_ERROR)]
+                return [Context(PY2_ONLY_ERROR)]
             if tk_string == PY3K_ONLY_ERROR:
-                return [context(PY3K_ONLY_ERROR)]
+                return [Context(PY3K_ONLY_ERROR)]
         else:
-            return [context(TUPLE_OR_PARENTH_FORM)]
+            return [Context(TUPLE_OR_PARENTH_FORM)]
 
     if token.type == OPENING_SQUARE_BRACKET:
         is_index_access = (
@@ -187,15 +200,15 @@ def process_parentheses(token, prev_1, prev_2):
             )
         )
         if is_index_access:
-            return [context(SUBSCRIPT)]
+            return [Context(SUBSCRIPT)]
 
-    return [context(True)]
+    return [Context(True)]
 
 
-def get_comma_errors(tokens):
-    tokens = simple_tokens(tokens)
+def get_comma_errors(tokens_iter: Iterator[Token]) -> Iterator[ErrorDict]:
+    tokens = simple_tokens(tokens_iter)
 
-    stack = [context()]
+    stack = [Context()]
 
     window = collections.deque([NONE, NONE], maxlen=3)
 
@@ -208,10 +221,10 @@ def get_comma_errors(tokens):
             )
 
         if token.type == LAMBDA:
-            stack.append(context(LAMBDA_EXPR))
+            stack.append(Context(LAMBDA_EXPR))
 
         if token.type == FOR:
-            stack[-1] = context()
+            stack[-1] = Context()
 
         if token.type == COMMA:
             stack[-1] = stack[-1]._replace(n=stack[-1].n + 1)
@@ -304,7 +317,7 @@ class CommaChecker(object):
 class Token:
     """Python 2 and 3 compatible token"""
 
-    def __init__(self, token):
+    def __init__(self, token: tokenize.TokenInfo) -> None:
         self.token = token
 
     @property
