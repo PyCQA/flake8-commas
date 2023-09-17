@@ -192,14 +192,6 @@ def process_parentheses(token, prev_1, prev_2):
     return [context(True)]
 
 
-def no_qa_comment(token):
-    return token.type == tokenize.COMMENT and token.string.endswith('noqa')
-
-
-def get_noqa_lines(tokens):
-    return [token.start_row for token in tokens if no_qa_comment(token)]
-
-
 def get_comma_errors(tokens):
     tokens = simple_tokens(tokens)
 

@@ -5,7 +5,7 @@ import pycodestyle
 from flake8 import utils
 
 from flake8_commas._base import (
-    get_noqa_lines, get_comma_errors, Token,
+    get_comma_errors, Token,
 )
 
 C813 = 'C813 missing trailing comma in Python 3'
@@ -27,11 +27,6 @@ def get_tokens(filename):
 
     for t in tokenize.generate_tokens(file_contents_next):
         yield Token(t)
-
-
-def test_get_noqa_lines():
-    filename = get_absolute_path('data/no_qa.py')
-    assert get_noqa_lines(get_tokens(filename)) == [2]
 
 
 def test_one_line_dict():
