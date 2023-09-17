@@ -53,6 +53,9 @@ class SimpleToken(object):
         self.token = token
         self.type = type
 
+    def __repr__(self) -> str:
+        return f'SimpleToken({self.token!r}, {self.type!r})'
+
 
 Context = collections.namedtuple('Context', ['comma', 'unpack', 'n'])
 
@@ -345,3 +348,6 @@ class Token:
     @property
     def end_col(self):
         return self.end[1]
+
+    def __repr__(self) -> str:
+        return f'Token({self.token!r})'
