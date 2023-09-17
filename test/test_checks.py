@@ -1,4 +1,5 @@
 import os
+import sys
 import tokenize
 
 import pycodestyle
@@ -184,6 +185,30 @@ def test_comma_required_in_multiline_case_nested():
     assert list(get_comma_errors(get_tokens(filename))) == [
         {'col': 20, 'line': 5, 'message': 'C812 missing trailing comma'},
     ]
+
+
+def test_comma_required_in_f_string_call():
+    fixture = 'data/f_strings.py'
+    filename = get_absolute_path(fixture)
+
+    expected = (
+        [
+            {
+                'col': 12,
+                'line': 7,
+                'message': 'C819 trailing comma prohibited',
+            },
+            {
+                'col': 6,
+                'line': 11,
+                'message': 'C812 missing trailing comma',
+            },
+        ]
+        if sys.version_info >= (3, 12)
+        else []
+    )
+
+    assert list(get_comma_errors(get_tokens(filename))) == expected
 
 
 def test_comma_not_required_even_if_you_use_dict_for():

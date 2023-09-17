@@ -117,22 +117,23 @@ def get_type(token: Token) -> str | None:
         if string in NOT_PYTHON_3_KWDS:
             return PY3K_ONLY_ERROR
         return NAMED
-    if string in {'**', '*'}:
-        return UNPACK
-    if string == ',':
-        return COMMA
-    if string == '(':
-        return OPENING_BRACKET
-    if string == '[':
-        return OPENING_SQUARE_BRACKET
-    if string in {'[', '{'}:
-        return SOME_OPENING
-    if string in {']', ')', '}'}:
-        return SOME_CLOSING
-    if string == '`':
-        return BACK_TICK
-    if string == ':':
-        return COLON
+    if type == tokenize.OP:
+        if string in {'**', '*'}:
+            return UNPACK
+        if string == ',':
+            return COMMA
+        if string == '(':
+            return OPENING_BRACKET
+        if string == '[':
+            return OPENING_SQUARE_BRACKET
+        if string in {'[', '{'}:
+            return SOME_OPENING
+        if string in {']', ')', '}'}:
+            return SOME_CLOSING
+        if string == '`':
+            return BACK_TICK
+        if string == ':':
+            return COLON
     return None
 
 
