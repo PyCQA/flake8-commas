@@ -157,13 +157,13 @@ def process_parentheses(token, prev_1, prev_2):
 
     if token.type == OPENING_BRACKET:
         is_function = (
-                previous_token and
+            previous_token and
+            (
+                (previous_token.type in CLOSE_ATOM) or
                 (
-                        (previous_token.type in CLOSE_ATOM) or
-                        (
-                                previous_token.type in FUNCTION
-                        )
+                    previous_token.type in FUNCTION
                 )
+            )
         )
         if is_function:
             if prev_2.type == DEF:
@@ -178,13 +178,13 @@ def process_parentheses(token, prev_1, prev_2):
 
     if token.type == OPENING_SQUARE_BRACKET:
         is_index_access = (
-                previous_token and
+            previous_token and
+            (
+                (previous_token.type in CLOSING) or
                 (
-                        (previous_token.type in CLOSING) or
-                        (
-                                previous_token.type == NAMED
-                        )
+                    previous_token.type == NAMED
                 )
+            )
         )
         if is_index_access:
             return [context(SUBSCRIPT)]
@@ -228,15 +228,15 @@ def get_comma_errors(tokens):
             stack[-1] = stack[-1]._replace(unpack=True)
 
         comma_allowed = token.type in CLOSING and (
-                stack[-1].comma or
-                stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
+            stack[-1].comma or
+            stack[-1].comma in TUPLE_ISH and stack[-1].n >= 1
         )
 
         comma_prohibited = prev_1.type == COMMA and (
-                (
-                        comma_allowed and
-                        (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
-                ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
+            (
+                comma_allowed and
+                (stack[-1].comma not in TUPLE_ISH or stack[-1].n > 1)
+            ) or stack[-1].comma == LAMBDA_EXPR and token.type == COLON
         )
         if comma_prohibited:
             end_row, end_col = prev_1.token.end
@@ -247,8 +247,8 @@ def get_comma_errors(tokens):
             }
 
         bare_comma_prohibited = (
-                token.token.type == tokenize.NEWLINE and
-                prev_1.type == COMMA
+            token.token.type == tokenize.NEWLINE and
+            prev_1.type == COMMA
         )
 
         if bare_comma_prohibited:
@@ -260,10 +260,10 @@ def get_comma_errors(tokens):
             }
 
         comma_required = (
-                comma_allowed and
-                prev_1.type == NEW_LINE and
-                prev_2.type != COMMA and
-                prev_2.type not in OPENING
+            comma_allowed and
+            prev_1.type == NEW_LINE and
+            prev_2.type != COMMA and
+            prev_2.type not in OPENING
         )
         if comma_required:
             end_row, end_col = prev_2.token.end
@@ -280,8 +280,8 @@ def get_comma_errors(tokens):
             }
 
         pop_stack = (
-                token.type in CLOSING or
-                (token.type == COLON and stack[-1].comma == LAMBDA_EXPR)
+            token.type in CLOSING or
+            (token.type == COLON and stack[-1].comma == LAMBDA_EXPR)
         )
         if pop_stack:
             stack.pop()
