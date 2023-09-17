@@ -1,13 +1,11 @@
 import collections
+import importlib.metadata
 import token as mod_token
 import tokenize
 
-import pkg_resources
-
 try:
-    dist = pkg_resources.get_distribution('flake8-commas')
-    __version__ = dist.version
-except pkg_resources.DistributionNotFound:
+    __version__ = importlib.metadata.version('flake8-commas')
+except importlib.metadata.PackageNotFoundError:
     __version__ = 'unknown'
 
 # A parenthesized expression list yields whatever that expression list
