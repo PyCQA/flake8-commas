@@ -290,17 +290,15 @@ class CommaChecker(object):
 
     def run(self):
         file_tokens = self.tokens
-        noqa_line_numbers = ()
         tokens = (Token(t) for t in file_tokens)
 
         for error in get_comma_errors(tokens):
-            if error.get('line') not in noqa_line_numbers:
-                yield (
-                    error.get('line'),
-                    error.get('col'),
-                    error.get('message'),
-                    type(self),
-                )
+            yield (
+                error.get('line'),
+                error.get('col'),
+                error.get('message'),
+                type(self),
+            )
 
 
 class Token:
