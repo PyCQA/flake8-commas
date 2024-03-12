@@ -1,4 +1,4 @@
-3.0.0 (unreleased)
+3.0.0 (2024-03-12)
 ------------------
 
 - Project renamed to ``flake8-commas-x`` to continue maintenance.
