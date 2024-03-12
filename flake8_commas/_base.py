@@ -7,7 +7,7 @@ import tokenize
 from typing import Iterator, NamedTuple, TypedDict
 
 try:
-    __version__ = importlib.metadata.version('flake8-commas')
+    __version__ = importlib.metadata.version('flake8-commas-x')
 except importlib.metadata.PackageNotFoundError:
     __version__ = 'unknown'
 

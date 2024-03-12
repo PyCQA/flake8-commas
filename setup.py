@@ -20,15 +20,15 @@ history = read('CHANGES.rst').replace('.. :changelog:', '')
 
 
 setup(
-    name='flake8-commas',
-    author='Ivailo Karamanolev',
-    author_email='ivailo@karamanolev.com',
-    maintainer='Ivailo Karamanolev',
-    maintainer_email='ivailo@karamanolev.com',
+    name='flake8-commas-x',
+    author="Peter Law",
+    author_email="PeterJCLaw@gmail.com",
+    maintainer="Peter Law",
+    maintainer_email="PeterJCLaw@gmail.com",
     version='3.0.0.dev0',
     install_requires=['flake8>=5'],
     python_requires='>=3.8',
-    url='https://github.com/karamanolev/flake8-commas/',
+    url='https://github.com/PeterJCLaw/flake8-commas/',
     long_description=readme + '\n\n' + history,
     description='Flake8 lint for trailing commas.',
     packages=['flake8_commas'],

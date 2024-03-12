@@ -16,4 +16,4 @@ def test_call_flake8_version():
         ['flake8', '--version'],
         stderr=subprocess.STDOUT,
     )
-    assert b'flake8-commas: ' in output
+    assert b'flake8-commas-x: ' in output

@@ -12,7 +12,7 @@ If you are using flake8 it's as easy as:
 
 .. code:: shell
 
-    pip install https://github.com/karamanolev/flake8-commas.git
+    pip install https://github.com/PeterJCLaw/flake8-commas.git
 
 Now you can avoid those annoying merge conflicts on dictionary and list diffs.
 
