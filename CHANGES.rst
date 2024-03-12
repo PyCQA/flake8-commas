@@ -1,7 +1,11 @@
-2.1.1 (unreleased)
+3.0.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Support dropped for Python <3.8.
+- Support added for Python 3.12.
+- Drop explicit ``noqa`` handling; this is handled by flake8 now.
+- Remove use of ``pkg_resources`` in favour of ``importlib``.
+- CI moved to GitHub Actions.
 
 
 2.1.0 (2021-10-13)
