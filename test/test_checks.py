@@ -5,9 +5,7 @@ import tokenize
 import pycodestyle
 from flake8 import utils
 
-from flake8_commas._base import (
-    get_comma_errors, Token,
-)
+from flake8_commas._base import Token, get_comma_errors
 
 C813 = 'C813 missing trailing comma in Python 3'
 C814 = 'C814 missing trailing comma in Python 2'

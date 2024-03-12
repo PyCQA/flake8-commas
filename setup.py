@@ -1,5 +1,6 @@
 import io
 import os
+
 from setuptools import setup
 
 __dir__ = os.path.dirname(__file__)
