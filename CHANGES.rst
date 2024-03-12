@@ -1,6 +1,7 @@
 3.0.0 (unreleased)
 ------------------
 
+- Project renamed to ``flake8-commas-x`` to continue maintenance.
 - Support dropped for Python <3.8.
 - Support added for Python 3.12.
 - Drop explicit ``noqa`` handling; this is handled by flake8 now.
