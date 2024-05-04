@@ -31,6 +31,7 @@ setup(
     python_requires='>=3.8',
     url='https://github.com/PeterJCLaw/flake8-commas/',
     long_description=readme + '\n\n' + history,
+    long_description_content_type='text/x-rst',
     description='Flake8 lint for trailing commas.',
     packages=['flake8_commas'],
     test_suite='test',
