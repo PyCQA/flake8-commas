@@ -3,6 +3,7 @@
 *.py[cod]
 .tox
 .cache
-dist
-build
 .idea
+
+/dist
+/build
