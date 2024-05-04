@@ -22,8 +22,8 @@ history = read('CHANGES.rst').replace('.. :changelog:', '')
 
 setup(
     name='flake8-commas',
-    author="Peter Law",
-    author_email="PeterJCLaw@gmail.com",
+    author="Trevor Creech",
+    author_email="trevor@trevorcreech.com",
     maintainer="Peter Law",
     maintainer_email="PeterJCLaw@gmail.com",
     version='4.0.0.dev0',
