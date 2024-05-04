@@ -1,3 +1,8 @@
+Unreleased
+------------------
+
+- Project renamed back to ``flake8-commas``
+
 3.0.0 (2024-03-12)
 ------------------
 

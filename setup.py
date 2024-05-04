@@ -21,7 +21,7 @@ history = read('CHANGES.rst').replace('.. :changelog:', '')
 
 
 setup(
-    name='flake8-commas-x',
+    name='flake8-commas',
     author="Peter Law",
     author_email="PeterJCLaw@gmail.com",
     maintainer="Peter Law",
@@ -29,7 +29,7 @@ setup(
     version='4.0.0.dev0',
     install_requires=['flake8>=5'],
     python_requires='>=3.8',
-    url='https://github.com/PeterJCLaw/flake8-commas/',
+    url='https://github.com/PyCQA/flake8-commas/',
     long_description=readme + '\n\n' + history,
     long_description_content_type='text/x-rst',
     description='Flake8 lint for trailing commas.',
