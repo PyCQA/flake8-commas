@@ -1,4 +1,4 @@
-Unreleased
+4.0.0
 ------------------
 
 - Project renamed back to ``flake8-commas``
