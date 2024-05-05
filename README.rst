@@ -52,6 +52,17 @@ Examples
         "key": "value",
     }),                      # <-- incorrect trailing comma. json_data is now a tuple. Likely by accident.
 
+Related tools
+-------------
+
+You may wish to consider one of the following tools alongside or instead of ``flake8-commas``.
+
+For automatic insertion of commas, though noting that these tools may implement
+different rules around where commas should be placed:
+
+* `black <https://pypi.org/project/black/>`_, the uncompromising Python code formatter
+* `add-trailing-comma <https://github.com/asottile/add-trailing-comma>`_, which can do comma insertion automatically
+
 
 .. |Build Status| image:: https://github.com/PyCQA/flake8-commas/actions/workflows/.github/workflows/tests.yml/badge.svg?branch=main
    :target: https://github.com/PyCQA/flake8-commas/actions?query=branch%3Amain
