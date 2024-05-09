@@ -1,7 +1,9 @@
 4.0.0
 ------------------
 
-- Project renamed back to ``flake8-commas``
+- Project renamed back to ``flake8-commas``. If upgrading from
+  ``flake8-commas-x`` you should uninstall that package before
+  installing this one as both packages install the same modules.
 
 3.0.0 (2024-03-12)
 ------------------
