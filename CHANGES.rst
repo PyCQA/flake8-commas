@@ -1,4 +1,4 @@
-4.0.0
+4.0.0 (2024-05-16)
 ------------------
 
 - Project renamed back to ``flake8-commas``. If upgrading from
