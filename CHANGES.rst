@@ -1,3 +1,9 @@
+Unreleased
+------------------
+
+- Explicit support added for Python 3.13 and 3.14. This already worked,
+  the only changes were to CI & test setup.
+
 4.0.0 (2024-05-16)
 ------------------
 
